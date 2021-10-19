@@ -9,18 +9,11 @@ async function handler (req: NextApiRequest, res: NextApiResponse): Promise<unkn
   const { login, password, remember } = req.body
 
   if (!login || !password) return res.status(400).send('Bad format')
-  const storageUser = await prisma.sec_users.findFirst({
+  const storageUser = await prisma.users_suzanog5.findFirst({
     select: {
       name: true,
-      users_groups: {
-        select: {
-          groups: true,
-          group_id: true,
-          id: true
-        }
-      },
       login: true,
-      pswd: true
+      password: true
     },
     where: {
       login
@@ -30,11 +23,8 @@ async function handler (req: NextApiRequest, res: NextApiResponse): Promise<unkn
   await prisma.$disconnect()
 
   if (!storageUser) return res.status(404).send('Usuário não encontrado')
-  const { users_groups } = storageUser
 
-  if (!users_groups) return res.status(404).send('Usuário não encontrado')
-
-  const isPasswordCorret = await comparePassword(password, `${storageUser.pswd}`)
+  const isPasswordCorret = await comparePassword(password, `${storageUser.password}`)
 
   if (!isPasswordCorret) return res.status(400).send('Senha incorreta')
 
