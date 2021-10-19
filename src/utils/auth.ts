@@ -24,7 +24,8 @@ export function getCookie (req: NextApiRequest, name: string): string | null {
   return null
 }
 
-export interface IToken extends IUserData{
+export interface IToken{
+  user: IUserData
   origin?: string
 }
 
