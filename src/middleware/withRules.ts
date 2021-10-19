@@ -17,7 +17,7 @@ async function getRules (req: NextApiRequest, session: IUserData) {
 
   const userGroups = await prisma.users_groups.findMany({
     where: {
-      user_id: session.user.login
+      user_id: session.login
     },
     include: {
       groups: true
@@ -71,7 +71,7 @@ const withRules = (handler: NextApiHandler) => {
     const session = await getSession(req)
 
     if (!session) return res.status(401).send('Não foi possível validar o seu usuário')
-    const rules = await getRules(req, session)
+    const rules = await getRules(req, session.user)
     if (!rules) return res.status(500).send('Erro ao verificar permissões')
 
     switch (req.method) {
