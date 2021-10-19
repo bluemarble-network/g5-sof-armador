@@ -26,7 +26,7 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
       const isRefreshTokenValid = await validateJwt(refreshToken)
 
       if (!isRefreshTokenValid) return res.status(403).send('Refresh token inválido')
-      const newSessionToken = generateNewSessionToken({ user: isRefreshTokenValid.user })
+      const newSessionToken = generateNewSessionToken({ ...isRefreshTokenValid.user })
       return res.status(200).setHeader('Set-Cookie', [
         serialize('next-token', newSessionToken, {
           path: '/',
@@ -38,8 +38,8 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
 
       if (!isRememberMeTokenValid) return res.status(403).send('Remember-me token token inválido')
 
-      const newRefreshToken = generateNewRefreshToken({ user: isRememberMeTokenValid.user })
-      const newSessionToken = generateNewSessionToken({ user: isRememberMeTokenValid.user })
+      const newRefreshToken = generateNewRefreshToken({ ...isRememberMeTokenValid.user })
+      const newSessionToken = generateNewSessionToken({ ...isRememberMeTokenValid.user })
 
       return res.status(200).setHeader('Set-Cookie', [
         serialize('next-token', newSessionToken, {
