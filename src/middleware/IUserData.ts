@@ -1,6 +1,4 @@
 export interface IUserData {
-  user: {
-     login: string
-     name: string
-  }
+  login: string
+  name: string
  }

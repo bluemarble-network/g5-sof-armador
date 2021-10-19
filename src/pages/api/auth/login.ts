@@ -1,13 +1,11 @@
 import { serialize } from 'cookie'
-import jwt from 'jsonwebtoken'
 import { NextApiRequest, NextApiResponse } from 'next'
-import { comparePassword, generateNewRefreshToken, generateNewSessionToken } from '../../../utils/auth'
+import { comparePassword, generateNewRefreshToken, generateNewRememberMeToken, generateNewSessionToken } from '../../../utils/auth'
 import { prisma } from '../../../utils/database'
 import { moment } from '../../../utils/moment'
 
 async function handler (req: NextApiRequest, res: NextApiResponse): Promise<unknown> {
   const { login, password, remember } = req.body
-
   if (!login || !password) return res.status(400).send('Bad format')
   const storageUser = await prisma.users_suzanog5.findFirst({
     select: {
@@ -48,11 +46,11 @@ async function handler (req: NextApiRequest, res: NextApiResponse): Promise<unkn
     login: storageUser.login
   }
 
-  const token = generateNewSessionToken({ user: formattedUser })
-  const refreshToken = generateNewRefreshToken({ user: formattedUser })
+  const token = generateNewSessionToken({ ...formattedUser })
+  const refreshToken = generateNewRefreshToken({ ...formattedUser })
 
-  if (remember) {
-    const rememberMeToken = jwt.sign({ data: { user: formattedUser, origin: req.headers.origin } }, `${process.env.JWT_SECRET}`, { expiresIn: '7days' })
+  if (remember && req.headers.origin) {
+    const rememberMeToken = generateNewRememberMeToken({ user: formattedUser, origin: req.headers.origin })
 
     await prisma.remember_me_token.deleteMany({ where: { user_id: storageUser.login } })
     await prisma.remember_me_token.create({ data: { user_id: storageUser.login, token: rememberMeToken } })
