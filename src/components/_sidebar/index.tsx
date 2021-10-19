@@ -1,10 +1,10 @@
 import { Box, Collapse, Drawer, Fab, IconButton, List, ListItem, Typography, Skeleton } from '@material-ui/core'
 import Link from 'next/link'
-import { useRouter } from 'next/router'
 import { useContext, useEffect, useState } from 'react'
 import { MdExitToApp, MdExpandLess, MdExpandMore, MdKeyboardArrowLeft, MdKeyboardArrowRight } from 'react-icons/md'
 import * as Icons from 'react-icons/md'
 import { AlertContext } from '../../contexts/alert'
+import { AuthContext } from '../../contexts/auth'
 import { api } from '../../utils/api'
 import { getErrorMessage } from '../../utils/error'
 
@@ -28,9 +28,9 @@ type iMenu = {
 const Sidebar = ({ drawerOpen, setDrawerOpen }: any) => {
   const [menuData, setMenuData] = useState<iMenu[]>([])
   const [loading, setLoading] = useState(false)
-  const router = useRouter()
 
   const { createAlert } = useContext(AlertContext)
+  const { SignOut } = useContext(AuthContext)
 
   async function getMenuData () {
     setLoading(true)
@@ -96,7 +96,7 @@ const Sidebar = ({ drawerOpen, setDrawerOpen }: any) => {
                     right: -30,
                     width: 50,
                     height: 50,
-                    boxShadow: '0 0 0 9999px #00aa4a'
+                    boxShadow: '0 0 0 9999px #1976d2'
                   }}
                 >
                 </Box>
@@ -165,12 +165,12 @@ const Sidebar = ({ drawerOpen, setDrawerOpen }: any) => {
                         </List>
 
                     </List>
-                    <ListItem onClick={() => router.push('https://sb-menu-principal.vercel.app/main')} button sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'white' }}>
+                    <ListItem onClick={() => SignOut()} button sx={{ display: 'flex', alignItems: 'center', gap: 1, color: 'white' }}>
                             <IconButton sx={{ color: 'white' }}>
                                 <MdExitToApp />
                             </IconButton>
                             <Typography component="p" variant="subtitle2">
-                                Menu principal
+                              Sair
                             </Typography>
                     </ListItem>
                 </List>
