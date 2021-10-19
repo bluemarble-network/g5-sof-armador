@@ -3309,7 +3309,6 @@ model users_groups {
   user_id        String         @db.VarChar(180)
   group_id       Int            @db.UnsignedInt
   groups         groups         @relation(fields: [group_id], references: [id])
-  users_suzanog5 users_suzanog5 @relation(fields: [user_id], references: [login])
 
   @@index([group_id], name: "users_groups_fk_1")
   @@index([user_id], name: "users_groups_fk_2")
@@ -3320,11 +3319,9 @@ model users_suzanog5 {
   name              String?             @db.VarChar(180)
   login             String              @id @default("1") @db.VarChar(180)
   password          String?             @db.VarChar(180)
-  group_id          Int                 @db.UnsignedInt
-  remember_me_token remember_me_token[]
-  users_groups      users_groups[]
 
-  @@index([group_id], name: "group_id")
+  remember_me_token remember_me_token[]
+
 }
 
 model webflow_cadastro_email_contato {
