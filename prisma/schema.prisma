@@ -1,0 +1,3072 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model Planilha2 {
+  C_digo_de_infra__o         Int?    @map("Código de infração")
+  Infra__o                   String? @map("Infração") @db.VarChar(255)
+  GRAVIDADE                  String? @db.VarChar(255)
+  Respons_vel                String? @map("Responsável") @db.VarChar(255)
+  PONTOS                     String? @db.VarChar(255)
+  Valor_da_multa             String? @map("Valor da multa") @db.VarChar(255)
+  Valor_da_multa_C__DESCONTO String? @map("Valor da multa C/ DESCONTO") @db.VarChar(255)
+  rg_o_Atuador               String? @map("Órgão Atuador") @db.VarChar(255)
+  Artigos_do_CTB             String? @map("Artigos do CTB") @db.VarChar(255)
+  Valor_Extenso_c__desconto  String? @map("Valor Extenso c/ desconto") @db.VarChar(255)
+
+  @@ignore
+}
+
+model applications {
+  id           Int      @id @default(autoincrement()) @db.UnsignedInt
+  url          String   @db.VarChar(100)
+  display_name String?  @db.VarChar(100)
+  icon         String?  @db.VarChar(80)
+  module_id    Int?     @db.UnsignedInt
+  visible      Boolean  @default(true)
+  order        Int?
+  modules      modules? @relation(fields: [module_id], references: [id])
+  routes       routes[]
+
+  @@index([module_id], name: "applications_FK")
+}
+
+model atualizar_ds {
+  id_atualizar_ds Int       @id @default(autoincrement())
+  data_hora       DateTime? @db.DateTime(0)
+  tabela          String?   @db.VarChar(50)
+  funcao          Int?
+  id              Int?
+}
+
+model atualizar_excel {
+  id_atualizar_excel      Int       @id @default(autoincrement())
+  data                    DateTime? @default(now()) @db.DateTime(0)
+  data_processada         DateTime? @db.DateTime(0)
+  data_processada_dataset DateTime? @db.DateTime(0)
+  consulta                String?   @db.VarChar(1000)
+  url                     String?   @db.VarChar(255)
+  evento                  String?   @db.VarChar(50)
+  id_diretorio            String?   @db.VarChar(100)
+  id_planilha             String?   @db.VarChar(100)
+  pagina                  String?   @db.VarChar(50)
+  processado              Int       @default(0)
+  erro                    String?   @db.VarChar(100)
+  erro_sql                String?   @db.VarChar(100)
+  processado_dataset      Int       @default(0)
+  erro_dataset            String?   @db.VarChar(100)
+}
+
+model atualizar_sheets {
+  id_atualizar_sheets Int       @id @default(autoincrement())
+  data                DateTime? @default(now()) @db.DateTime(0)
+  consulta            String?   @db.VarChar(1000)
+  url                 String?   @db.VarChar(255)
+  evento              String?   @db.VarChar(50)
+  pagina              String?   @db.VarChar(50)
+  id_sheets           String?   @db.VarChar(100)
+  processado          Int       @default(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model azure_token {
+  token String?   @db.LongText
+  data  DateTime? @default(now()) @db.DateTime(0)
+  conta String?   @db.VarChar(50)
+
+  @@ignore
+}
+
+model base_rodoviario_buonny {
+  id_base_rodoviario_buonny Int       @id @default(autoincrement())
+  frota                     String?   @db.VarChar(10)
+  placa                     String?   @db.VarChar(10)
+  data_programada           String?   @db.VarChar(20)
+  referencia                String?   @db.VarChar(20)
+  container                 String?   @db.VarChar(20)
+  terminal_coleta           String?   @db.VarChar(100)
+  destino_final             String?   @db.VarChar(100)
+  saida_carregado           String?   @db.VarChar(20)
+  hora_chegada              String?   @db.VarChar(20)
+  hora_saida                String?   @db.VarChar(20)
+  atualizado                DateTime? @db.DateTime(0)
+}
+
+model base_rodoviario_mapa_de_viagem {
+  id_base_rodoviario_mapa_de_viagem Int       @id @default(autoincrement())
+  cliente_dono                      String?   @db.VarChar(50)
+  modalidade                        String?   @db.VarChar(10)
+  coleta                            String?   @db.VarChar(70)
+  entrega                           String?   @db.VarChar(50)
+  c20                               Int?
+  c40                               Int?
+  basc                              Int?
+  cs_ltl                            Int?
+  lcl                               Int?
+  referencia                        String?   @db.VarChar(50)
+  horario                           String?   @db.Char(6)
+  data                              String?   @db.VarChar(20)
+  observacao                        String?   @db.VarChar(255)
+  container                         String?   @db.VarChar(20)
+  documento                         String?   @db.VarChar(20)
+  atualizado                        DateTime? @db.DateTime(0)
+}
+
+model base_sitra_rodoviario {
+  id_base_sitra_rodoviario      Int       @id @default(autoincrement())
+  id_principal                  String?   @unique @db.VarChar(50)
+  atualizado                    DateTime? @db.DateTime(0)
+  agendamento                   String?   @db.VarChar(20)
+  base_de_calculo               Float?
+  bl                            String?   @db.VarChar(25)
+  bug                           String?   @db.VarChar(20)
+  cfop                          Float?
+  civil                         String?   @db.VarChar(5)
+  cnpj_cpf_cliente              String?   @db.VarChar(25)
+  cnpj_cpf_proprietario         String?   @db.VarChar(25)
+  codigo_cliente                String?   @db.VarChar(25)
+  codigo_destinatario           String?   @db.VarChar(25)
+  codigo_emetente               String?   @db.VarChar(25)
+  codigo_pagador                String?   @db.VarChar(25)
+  coleta                        String?   @db.VarChar(125)
+  coleta_endereco               String?   @db.VarChar(150)
+  complementar                  String?   @db.VarChar(20)
+  container                     String?   @db.VarChar(20)
+  container_tipo                String?   @db.VarChar(20)
+  cpf_motorista                 String?   @db.VarChar(20)
+  ctrc                          String?   @db.VarChar(20)
+  despacho                      String?   @db.VarChar(20)
+  despacho_1                    String?   @db.VarChar(20)
+  dimensoes                     String?   @db.VarChar(20)
+  documento                     String?   @db.VarChar(20)
+  emissao                       String?   @db.VarChar(20)
+  emissor_cte                   String?   @db.VarChar(100)
+  entrega                       String?   @db.VarChar(100)
+  entrega_endereco              String?   @db.VarChar(150)
+  exercito                      String?   @db.VarChar(5)
+  federal                       String?   @db.VarChar(5)
+  filial                        String?   @db.VarChar(20)
+  frete_peso                    Float?
+  frete_total                   Float?
+  frete_valor                   Float?
+  frota                         String?   @db.VarChar(20)
+  icms                          Float?
+  inscricao_cliente             String?   @db.VarChar(20)
+  mercadoria                    String?   @db.VarChar(50)
+  modalidade                    String?   @db.VarChar(20)
+  navio                         String?   @db.VarChar(100)
+  ncm                           String?   @db.VarChar(100)
+  nome_cliente                  String?   @db.VarChar(100)
+  nome_destinatario             String?   @db.VarChar(100)
+  nome_motorista                String?   @db.VarChar(100)
+  nome_pagador                  String?   @db.VarChar(100)
+  nome_proprietario             String?   @db.VarChar(100)
+  nome_remetente                String?   @db.VarChar(150)
+  numero_nfe                    String?   @db.VarChar(12)
+  oa                            String?   @db.VarChar(5)
+  outras_taxas                  Float?
+  pedagio                       Float?
+  peso                          Float?
+  porto                         String?   @db.VarChar(25)
+  produto_perigoso              String?   @db.VarChar(25)
+  referencia                    String?   @db.VarChar(25)
+  reserva                       String?   @db.VarChar(150)
+  retira_entrega_vazio          String?   @db.VarChar(150)
+  retira_entrega_vazio_endereco String?   @db.VarChar(150)
+  sec_cat                       String?   @db.VarChar(50)
+  serie                         String?   @db.VarChar(2)
+  st                            String?   @db.VarChar(12)
+  transporte                    Float?
+  valor_mercadoria              Float?
+  veiculo                       String?   @db.VarChar(12)
+  volumes                       Float?
+}
+
+model cadastro_ctl {
+  id_cadastro_ctl Int       @id @default(autoincrement())
+  dias            Int       @default(0)
+  data            DateTime? @db.Date
+  orcado          Decimal?  @db.Decimal(10, 0)
+  realizado       Decimal?  @db.Decimal(10, 0)
+  saldo           Decimal?  @db.Decimal(10, 0)
+  media_diaria    Decimal?  @db.Decimal(10, 0)
+  ritmo           Decimal?  @db.Decimal(10, 0)
+  aderencia       Decimal?  @db.Decimal(10, 0)
+  ajuste          Decimal?  @db.Decimal(10, 0)
+  usuario         String?   @db.VarChar(50)
+  data_hora       DateTime? @db.DateTime(0)
+  obs             String?   @db.VarChar(255)
+}
+
+model cadastro_funcao {
+  id_cadastro_funcao Int     @id @default(autoincrement())
+  funcao             String? @db.VarChar(30)
+}
+
+model cadastro_motorista {
+  id_cadastro_motorista Int       @id @default(autoincrement())
+  nome                  String?   @db.VarChar(50)
+  rg                    String?   @db.VarChar(50)
+  cpf                   String?   @db.VarChar(50)
+  cnh                   String?   @db.VarChar(50)
+  validade_cnh          DateTime? @db.Date
+}
+
+model cadastro_nvocc {
+  id_cadastro_nvocc Int       @id @default(autoincrement())
+  dias              Int?
+  data              DateTime? @db.Date
+  orcado            Decimal?  @db.Decimal(10, 0)
+  realizado         Decimal?  @db.Decimal(10, 0)
+  saldo             Decimal?  @db.Decimal(10, 0)
+  media_diaria      Decimal?  @db.Decimal(10, 0)
+  ritmo             Decimal?  @db.Decimal(10, 0)
+  aderencia         Decimal?  @db.Decimal(10, 0)
+  ajuste            Decimal?  @db.Decimal(10, 0)
+  usuario           String?   @db.VarChar(50)
+  data_hora         DateTime? @db.DateTime(0)
+  obs               String?   @db.VarChar(255)
+}
+
+model cadastro_transporte {
+  id_cadastro_transporte Int       @id @default(autoincrement())
+  data                   DateTime? @db.Date
+  dias                   Int?
+  orcado                 Decimal?  @db.Decimal(10, 0)
+  realizado              Decimal?  @db.Decimal(10, 0)
+  saldo                  Decimal?  @db.Decimal(10, 0)
+  media_diaria           Decimal?  @db.Decimal(10, 0)
+  ritmo                  Decimal?  @db.Decimal(10, 0)
+  aderencia              Decimal?  @db.Decimal(10, 0)
+  ajuste                 Decimal?  @db.Decimal(10, 0)
+  usuario                String?   @db.VarChar(50)
+  data_hora              DateTime? @db.DateTime(0)
+  obs                    String?   @db.VarChar(255)
+}
+
+model chamado_responsavel_cadastro {
+  id_chamado_responsavel_cadastro Int     @id @default(autoincrement())
+  nome                            String? @db.VarChar(50)
+  email                           String? @db.VarChar(50)
+}
+
+model chamados {
+  id_chamados         Int       @id @default(autoincrement())
+  n_chamado           String?   @db.VarChar(30)
+  data_abertura       DateTime? @db.DateTime(0)
+  usuario             String?   @db.VarChar(50)
+  email               String?   @db.VarChar(70)
+  usuario_solicitante String?   @db.VarChar(50)
+  email_solicitante   String?   @db.VarChar(50)
+  setor_solicitante   String?   @db.VarChar(50)
+  atualizado_por      String?   @db.VarChar(50)
+  motivo              String    @db.Text
+  status_chamados     String?   @db.VarChar(30)
+  data_finalizacao    DateTime? @db.DateTime(0)
+  solucao             String    @db.Text
+  foto                Bytes?    @db.MediumBlob
+  data_prazo          DateTime? @db.Date
+  tipo_chamado        String?   @db.VarChar(50)
+  responsavel         String?   @db.VarChar(50)
+  responsavel_email   String?   @db.VarChar(50)
+}
+
+model chamados_historico {
+  id_chamados_historico Int       @id @default(autoincrement())
+  id_chamados           Int?
+  report                Int?
+  observacao            String?   @db.Text
+  data_report           DateTime? @db.DateTime(0)
+  usuario               String?   @db.VarChar(50)
+}
+
+model chamados_setor {
+  id_chamados_setor Int     @id @default(autoincrement())
+  setor             String? @db.VarChar(50)
+}
+
+model ctl_base_cheios_orcado {
+  id_ctl_base_cheios_orcado Int       @id @default(autoincrement())
+  mes_orcado                DateTime? @unique @db.Date
+  qtd_dias                  Int?
+  orcado                    Int?
+  orcado_por_dia            Int?
+}
+
+model dash_mobile {
+  id_dash_mobile Int     @id @default(autoincrement())
+  itens          String? @db.VarChar(50)
+  link           String? @db.VarChar(255)
+  local          String? @db.VarChar(20)
+  icone          String? @db.VarChar(255)
+}
+
+model dashboard_info {
+  id       Int     @id @default(autoincrement())
+  icon     String? @db.VarChar(100)
+  route_id Int     @db.UnsignedInt
+  routes   routes  @relation(fields: [route_id], references: [id])
+
+  @@index([route_id], name: "dashboard_info_FK")
+}
+
+model dashboards_menu {
+  id_dashboards_menu Int     @id @default(autoincrement())
+  nome               String? @db.VarChar(50)
+  icone              String? @db.VarChar(50)
+  link               String  @db.VarChar(150)
+}
+
+model financeiro_dados {
+  id_financeiro_dados Int       @id @default(autoincrement())
+  classe_custo        String?   @db.VarChar(20)
+  centro_custo        String?   @db.VarChar(20)
+  valor               Decimal?  @db.Decimal(20, 2)
+  denominacao_objeto  String?   @db.VarChar(100)
+  periodo             String?   @db.VarChar(10)
+  descricao_classe    String?   @db.VarChar(100)
+  texto_breve         String?   @db.VarChar(100)
+  denominacao         String?   @db.TinyText
+  justificativa       String?   @db.TinyText
+  competencia         String?   @db.VarChar(10)
+  usuario             String?   @db.VarChar(30)
+  update_at           DateTime? @default(now()) @db.DateTime(0)
+}
+
+model financeiro_he_orcado {
+  id_financeiro_he_orcado Int       @id @default(autoincrement())
+  competencia             DateTime? @db.Date
+  registro                String?   @db.VarChar(50)
+  nome                    String?   @db.VarChar(255)
+  cargo                   String?   @db.VarChar(100)
+  centro_custo            String?   @db.VarChar(20)
+  tipo_he                 String?   @db.VarChar(50)
+  orcado_he               Decimal?  @db.Decimal(20, 2)
+  usuario                 String?   @db.VarChar(30)
+  update_at               DateTime? @default(now()) @db.DateTime(0)
+}
+
+model financeiro_he_orcado_realizado {
+  id_financeiro_he_orcado_realizado Int       @id @default(autoincrement())
+  competencia                       DateTime? @db.Date
+  registro                          String?   @db.VarChar(50)
+  nome                              String?   @db.VarChar(255)
+  cargo                             String?   @db.VarChar(100)
+  data_admissao                     DateTime? @db.Date
+  centro_custo                      String?   @db.VarChar(20)
+  centro_custo_nome                 String?   @db.VarChar(100)
+  area                              String?   @db.VarChar(50)
+  unidade                           String?   @db.VarChar(50)
+  codigo                            String?   @db.VarChar(10)
+  descricao                         String?   @db.VarChar(50)
+  tipologia                         String?   @db.VarChar(50)
+  orcado_he                         Decimal?  @db.Decimal(20, 2)
+  realizado_he                      Decimal?  @db.Decimal(20, 2)
+  realizado_rs                      Decimal?  @db.Decimal(20, 2)
+  orcado_rs                         Decimal?  @db.Decimal(20, 2)
+  classificacao                     String?   @db.VarChar(50)
+  usuario                           String?   @db.VarChar(30)
+  update_at                         DateTime? @default(now()) @db.DateTime(0)
+}
+
+model financeiro_orcados {
+  id_financeiro_orcados  Int       @id @default(autoincrement())
+  classe_custo           String?   @db.VarChar(20)
+  grupo                  String?   @db.VarChar(100)
+  classe_custo_descricao String?   @db.TinyText
+  centro_custo           String?   @db.VarChar(20)
+  objeto_emissor         String?   @db.VarChar(150)
+  competencia            DateTime? @db.Date
+  orcado                 Decimal?  @db.Decimal(20, 2)
+  realizado              Decimal?  @db.Decimal(20, 2)
+  variacao               Decimal?  @db.Decimal(20, 2)
+  variacao_porc          Decimal?  @db.Decimal(20, 5)
+  usuario                String?   @db.VarChar(30)
+  update_at              DateTime? @default(now()) @db.DateTime(0)
+}
+
+model gerencial_transporte_distribuicao_entregas {
+  id_gerencial_transporte_distribuicao_entregas Int       @id @default(autoincrement())
+  data_entrega                                  DateTime? @db.Date
+  ctrc_minuta                                   String?   @db.VarChar(20)
+  tipo_veiculo                                  String?   @db.VarChar(30)
+  faturado                                      String?   @db.VarChar(100)
+  cidade_destino                                String?   @db.VarChar(100)
+  qt_volumes                                    Decimal?  @db.Decimal(20, 2)
+  m3                                            Int?
+  peso                                          Decimal?  @db.Decimal(20, 2)
+  update_at                                     DateTime? @default(now()) @db.DateTime(0)
+}
+
+model gerencial_transporte_distribuicao_orcado {
+  id_gerencial_transporte_distribuicao_orcado Int       @id @default(autoincrement())
+  agenda                                      DateTime? @db.Date
+  orc_viagens                                 Int?
+  planejado_viagens                           Int?
+  orc_receita                                 Int?
+  forecast_receita                            Int?
+  realizado                                   Int?
+  projecao                                    Int?
+  update_at                                   DateTime? @default(now()) @db.DateTime(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model google_api {
+  email         String?   @db.TinyText
+  data          DateTime? @db.DateTime(0)
+  token         String?   @db.Text
+  client_id     String?   @db.TinyText
+  client_secret String?   @db.TinyText
+  refresh_token String?   @db.TinyText
+  code          String?   @db.TinyText
+
+  @@ignore
+}
+
+model google_api_log {
+  id_google_api_log Int       @id @default(autoincrement())
+  obs               String?   @db.TinyText
+  data              DateTime? @default(now()) @db.DateTime(0)
+}
+
+model google_drive {
+  id_google_drive Int     @id @default(autoincrement())
+  nome            String? @db.VarChar(100)
+  arquivo         String? @db.VarChar(100)
+  url             String? @db.VarChar(150)
+  email           String? @db.VarChar(50)
+  diretorio       String? @db.VarChar(50)
+  nome_drive      String? @db.VarChar(100)
+}
+
+model group_permission {
+  id        Int     @id @default(autoincrement()) @db.UnsignedInt
+  group_id  Int     @db.UnsignedInt
+  canUpdate Boolean
+  canInsert Boolean
+  canDelete Boolean
+  canView   Boolean
+  route_id  Int     @db.UnsignedInt
+  groups    groups  @relation(fields: [group_id], references: [id])
+  routes    routes  @relation(fields: [route_id], references: [id])
+
+  @@index([route_id], name: "application_id")
+  @@index([group_id], name: "group_id")
+}
+
+model groups {
+  id               Int                @id @default(autoincrement()) @db.UnsignedInt
+  name             String?            @db.VarChar(180)
+  module_id        Int                @db.UnsignedInt
+  display_name     String?            @db.VarChar(180)
+  modules          modules            @relation(fields: [module_id], references: [id])
+  group_permission group_permission[]
+  users_groups     users_groups[]
+
+  @@index([module_id], name: "module_id")
+}
+
+model log {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  user       String   @db.VarChar(50)
+  url        String   @db.VarChar(50)
+  method     String   @db.VarChar(50)
+  body       String   @db.LongText
+  created_at DateTime @default(now())
+}
+
+model manuntencao_combustivel {
+  id_manuntencao_combustivel Int       @id @default(autoincrement())
+  centro_custo               Int?
+  descricao                  String?   @db.VarChar(80)
+  tipo_abastecimento         String?   @db.VarChar(80)
+  realizado_litros           Decimal?  @db.Decimal(10, 2)
+  orcado                     Decimal?  @db.Decimal(10, 2)
+  realizado_valor            Decimal?  @db.Decimal(10, 2)
+  competencia                DateTime? @db.Date
+  valor_litro                Decimal?  @db.Decimal(10, 2)
+  update_at                  DateTime? @default(now()) @db.DateTime(0)
+}
+
+model manuntencao_orcado_principal {
+  id_manuntencao_orcado_principal Int                            @id @default(autoincrement())
+  data_realizado                  DateTime?                      @db.Date
+  centro_custo                    String?                        @db.VarChar(50)
+  km                              Int?
+  manuntencao_orcado_realizado    manuntencao_orcado_realizado[]
+}
+
+model manuntencao_orcado_realizado {
+  id_manuntencao_orcadao_realizado Int                          @id @default(autoincrement())
+  id_manuntencao_orcado_principal  Int                          @default(0)
+  data_realizado                   DateTime?                    @db.Date
+  orcado                           Decimal?                     @db.Decimal(10, 2)
+  realizado                        Decimal?                     @db.Decimal(10, 2)
+  variacao                         Decimal?                     @db.Decimal(10, 2)
+  despesa                          String?                      @db.VarChar(50)
+  centro_custo                     String?                      @db.VarChar(50)
+  update_at                        DateTime?                    @default(now()) @db.DateTime(0)
+  manuntencao_orcado_principal     manuntencao_orcado_principal @relation(fields: [id_manuntencao_orcado_principal], references: [id_manuntencao_orcado_principal])
+
+  @@index([id_manuntencao_orcado_principal], name: "FK_manuntencao_orcado_realizado_manuntencao_orcado_principal")
+}
+
+model manutencao_centro_custo {
+  id_manutencao_centro_custo Int     @id @unique
+  descricao                  String? @db.TinyText
+}
+
+model manutencao_sa_media_veiculos {
+  id_manutencao_sa_media_veiculos Int       @id @default(autoincrement())
+  centro_custo                    Int?
+  veiculo                         String?   @db.VarChar(50)
+  quantidade                      Int?
+  capacidade_tanque               Int?
+  media_ponderada                 Int?
+  km_total_mes                    Decimal?  @db.Decimal(10, 2)
+  mes                             DateTime? @db.Date
+  litros_cta                      Decimal?  @db.Decimal(10, 2)
+  valor_cta                       Decimal?  @db.Decimal(10, 2)
+  litros_ctf                      Decimal?  @db.Decimal(10, 2)
+  valor_ctf                       Decimal?  @db.Decimal(10, 2)
+  litros_cta_ctf                  Decimal?  @db.Decimal(10, 2)
+  valor_cta_ctf                   Decimal?  @db.Decimal(10, 2)
+  autonomia                       Decimal?  @db.Decimal(10, 3)
+  media                           Decimal?  @db.Decimal(10, 3)
+  autonomia_tanque                Decimal?  @db.Decimal(10, 5)
+}
+
+model mecanica_avaria {
+  id_mecanica_avaria                     Int       @id @default(autoincrement())
+  data                                   DateTime? @db.Date
+  frota                                  String?   @db.VarChar(30)
+  recurso                                String?   @db.VarChar(30)
+  operacao                               String?   @db.VarChar(30)
+  ocorrencia                             String?   @db.Text
+  tipo_de_avaria                         String?   @db.VarChar(50)
+  local                                  String?   @db.VarChar(50)
+  responsabilidade                       String?   @db.VarChar(30)
+  condutor                               String?   @db.VarChar(100)
+  custos_reais                           Decimal?  @db.Decimal(20, 2)
+  custos_pecas                           Decimal?  @db.Decimal(20, 2)
+  custos_total                           Decimal?  @db.Decimal(20, 2)
+  custos_estimados                       Decimal?  @db.Decimal(20, 2)
+  cashback                               Decimal?  @db.Decimal(20, 2)
+  informacao_da_avaria                   String?   @db.VarChar(255)
+  mttr                                   String?   @db.VarChar(10)
+  perda_de_receita_por_indisponibilidade Decimal?  @db.Decimal(20, 2)
+  status_da_avaria                       String?   @db.VarChar(50)
+  fornecedor                             String?   @db.VarChar(50)
+  conta_razao                            String?   @db.VarChar(50)
+  mes_pagamento                          String?   @db.VarChar(50)
+  usuario                                String?   @db.VarChar(30)
+  update_at                              DateTime? @default(now()) @db.DateTime(0)
+}
+
+model mecanica_checklist {
+  id_mecanica_checklist           Int     @id @default(autoincrement())
+  id_mecanica_checklist_principal Int?
+  item                            String? @db.VarChar(150)
+  status_item                     String? @db.VarChar(10)
+  observacao                      String? @db.VarChar(255)
+  tem_foto                        Int?
+  impedimento                     String? @db.VarChar(50)
+  tipo_item                       String? @db.VarChar(50)
+}
+
+model mecanica_checklist_foto {
+  id_mecanica_checklist_foto Int     @id @default(autoincrement())
+  id_mecanica_checklist      Int?
+  foto                       Bytes?
+  arquivo                    String? @db.VarChar(100)
+  url                        String? @db.VarChar(100)
+}
+
+model mecanica_checklist_itens {
+  id_Imecanica_checklist_itens Int     @id @default(autoincrement())
+  Itens                        String? @db.VarChar(255)
+  impedimento                  String? @db.VarChar(255)
+  tipo_item                    String? @db.VarChar(50)
+  tipo_item_cavalo             String? @db.VarChar(50)
+}
+
+model mecanica_checklist_principal {
+  id_mecanica_checklist_principal Int       @id @default(autoincrement())
+  nome                            String?   @db.VarChar(50)
+  frota                           String?   @db.VarChar(10)
+  data_hora_inicio                DateTime? @db.DateTime(0)
+  data_hora_final                 DateTime? @db.DateTime(0)
+  km_inicial                      Int?
+  combustivel_inicial             String?   @db.VarChar(20)
+  status_cheklist                 String?   @db.VarChar(20)
+  semirreboque                    String?   @db.VarChar(10)
+  mecanico_responsavel            String?   @db.VarChar(50)
+  nome_assinatura                 String?   @db.VarChar(50)
+  assinatura                      Bytes?
+}
+
+model mecanica_checklist_tipo_item_cadastro {
+  id_mecanica_checklist_tipo_item_cadastro Int     @id @default(autoincrement())
+  tipo_item                                String? @db.VarChar(50)
+}
+
+model mecanica_classificacao_servico {
+  classificacao String @id @db.VarChar(50)
+}
+
+model mecanica_fornecedor {
+  id_mecanica_fornecedor Int     @id @default(autoincrement())
+  fornecedor             String? @unique @db.VarChar(50)
+  descricao_servicos     String? @db.VarChar(200)
+  endereco               String? @db.VarChar(200)
+}
+
+model mecanica_frota {
+  id_mecaninca_frota Int     @id @default(autoincrement())
+  frota              String? @unique @db.VarChar(10)
+  placa              String? @db.VarChar(10)
+  fabricante_modelo  String? @db.VarChar(100)
+  ano_fabricacao     Int?
+  ano_modelo         Int?
+  chassi             String? @db.VarChar(20)
+  renavam            String? @db.VarChar(11)
+  centro_custo       String? @db.VarChar(100)
+  km_hr_atual        Float?
+  km_hr              Float?
+  situacao_real      String? @db.VarChar(50)
+}
+
+model mecanica_frota_completa {
+  frota                         String    @id @db.VarChar(10)
+  placa                         String?   @unique @db.VarChar(10)
+  cod_cc                        String?   @db.VarChar(4)
+  cc                            String?   @db.VarChar(10)
+  marca                         String?   @db.VarChar(100)
+  modelo                        String?   @db.VarChar(20)
+  tipo                          String?   @db.VarChar(11)
+  cc_modelo_resumido            String?   @db.VarChar(20)
+  situacao                      String?   @db.VarChar(30)
+  fabricante                    String?   @db.VarChar(30)
+  n_chassi                      String?   @db.VarChar(50)
+  ano                           Int?      @db.Year
+  situacao_real                 String?   @db.VarChar(10)
+  update_at                     DateTime? @default(now()) @db.DateTime(0)
+  km_ultima                     Int?
+  km_atual                      Int?
+  prox_revisao                  Int?
+  preventiva_ultima_atualizacao DateTime? @db.DateTime(0)
+  preventiva_programar          DateTime? @db.Date
+  preventiva_tipo               String?   @db.VarChar(10)
+  preventiva_status             String?   @db.VarChar(20)
+  km_mip                        Int?
+  km_temporario                 Int?
+
+  @@index([frota], name: "frota")
+  @@index([tipo], name: "tipo")
+}
+
+model mecanica_frota_preventivas {
+  id_mecanica_frota_preventivas Int       @id @default(autoincrement())
+  frota                         String?   @db.VarChar(10)
+  km_atual                      Int?
+  preventiva_tipo               String?   @db.VarChar(10)
+  update_at                     DateTime? @default(now()) @db.DateTime(0)
+  usuario                       String?   @db.VarChar(50)
+}
+
+model mecanica_pitstop {
+  id_mecanica_pitstop Int       @id @default(autoincrement())
+  data                DateTime? @db.Date
+  frota               String?   @db.VarChar(30)
+  categoria           String?   @db.VarChar(30)
+  modelo              String?   @db.VarChar(30)
+  cc                  String?   @db.VarChar(30)
+  categoria_servico   String?   @db.VarChar(50)
+  servico             String?   @db.VarChar(254)
+  tempo               DateTime? @db.Time(0)
+  usuario             String?   @db.VarChar(30)
+  update_at           DateTime? @default(now()) @db.DateTime(0)
+}
+
+model mecanica_semirreboque {
+  id_mecanica_semirreboque Int     @id @default(autoincrement())
+  frota                    String? @db.VarChar(10)
+  placa                    String? @db.VarChar(10)
+  centro_custo             String? @db.VarChar(50)
+}
+
+model mecanica_servicos {
+  id_mecanica_servicos  Int     @id @default(autoincrement())
+  codigo_servico        Int?
+  classificacao_servico String? @db.VarChar(20)
+  servicos              String? @db.VarChar(200)
+}
+
+model mecanica_status {
+  id_mecanica_status Int     @id @default(autoincrement())
+  status_mecaninca   String? @unique @db.VarChar(50)
+}
+
+model mecanica_veiculos_manutencao {
+  id_mecanica_veiculos_manutencao Int       @id @default(autoincrement())
+  frota                           String?   @db.VarChar(50)
+  cc                              String?   @db.VarChar(10)
+  data_entrada                    DateTime? @db.DateTime(0)
+  previsao_saida                  DateTime? @db.DateTime(0)
+  data_saida                      DateTime? @db.DateTime(0)
+  status_mecanica                 String?   @db.VarChar(50)
+  observacao                      String?   @db.VarChar(255)
+  parecer_atual                   String?   @db.VarChar(255)
+  tempo_manutencao                Float?
+  data_reicidencia                DateTime? @db.DateTime(0)
+  tempo_reicidencia               Int?
+  categoria                       String?   @db.VarChar(11)
+  oficina                         String?   @db.VarChar(10)
+  tipo_manutencao                 String?   @db.VarChar(20)
+  update_at                       DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([status_mecanica], name: "FK_mecanica_veiculos_manutencao_mecanica_status")
+}
+
+model mecanica_veiculos_manutencao_planilha {
+  id_mecanica_veiculos_manutencao_planilha Int       @id @default(autoincrement())
+  frota                                    String?   @db.VarChar(10)
+  data_entrada                             DateTime? @db.DateTime(0)
+  data_saida                               DateTime? @db.DateTime(0)
+  dias_manutencao                          Int?
+  categoria                                String?   @db.VarChar(50)
+  servico                                  String?   @db.TinyText
+  intervencao                              String?   @db.VarChar(50)
+  fornecedor                               String?   @db.VarChar(50)
+  etapa                                    String?   @db.VarChar(50)
+  responsavel                              String?   @db.VarChar(50)
+  parecer                                  String?   @db.TinyText
+}
+
+model mecanica_veiculos_manutencao_servicos {
+  id_mecanica_veiculos_manutencao_servicos Int       @id @default(autoincrement())
+  id_mecanica_veiculos_manutencao          Int?
+  classificacao_servicos                   String?   @db.VarChar(20)
+  codigo                                   Int?
+  servicos                                 String?   @db.VarChar(200)
+  fornecedor                               String?   @db.VarChar(50)
+  observacao                               String?   @db.VarChar(255)
+  tipo_intervencao                         String?   @db.VarChar(10)
+  responsavel_servico                      String?   @db.VarChar(50)
+  update_at                                DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([id_mecanica_veiculos_manutencao], name: "id_mecanica_veiculos_manutencao")
+}
+
+model metas_indicador {
+  id_metas_indicador       Int           @id @default(autoincrement())
+  id_metas_setor           Int?
+  indicador                String?       @db.VarChar(50)
+  descricao                String?       @db.Text
+  data_inicio              DateTime?     @db.Date
+  data_fim                 DateTime?     @db.Date
+  data_indicador_alcancado DateTime?     @db.Date
+  valor_inicial            Int?
+  valor_final              Int?
+  peso                     Decimal?      @db.Decimal(10, 2)
+  porcentagem              Decimal?      @db.Decimal(10, 2)
+  porcentagem_ponderada    Decimal?      @db.Decimal(10, 2)
+  medido_por               String?       @db.VarChar(15)
+  arquivo                  Bytes?
+  arquivo_nome             String?       @db.VarChar(50)
+  metas_setor              metas_setor?  @relation(fields: [id_metas_setor], references: [id_metas_setor])
+  metas_itens              metas_itens[]
+  metas_regua              metas_regua[]
+
+  @@index([id_metas_setor], name: "FK_metas_indicador_metas_setor")
+}
+
+model metas_itens {
+  id_metas_itens           Int              @id @default(autoincrement())
+  id_metas_indicador       Int?
+  id_metas_setor           Int?
+  item                     String?          @db.VarChar(50)
+  descricao                String?          @db.VarChar(150)
+  data_inicio              DateTime?        @db.Date
+  data_fim                 DateTime?        @db.Date
+  data_indicador_alcancado DateTime?        @db.Date
+  obs                      String?          @db.Text
+  porcentagem              Decimal?         @db.Decimal(10, 2)
+  metas_indicador          metas_indicador? @relation(fields: [id_metas_indicador], references: [id_metas_indicador])
+  metas_setor              metas_setor?     @relation(fields: [id_metas_setor], references: [id_metas_setor])
+
+  @@index([id_metas_indicador], name: "FK_metas_itens_metas_indicador")
+  @@index([id_metas_setor], name: "FK_metas_itens_metas_setor")
+}
+
+model metas_regua {
+  id_metas_regua     Int              @id @default(autoincrement())
+  id_metas_setor     Int?
+  id_metas_indicador Int?
+  porcentagem_de     Int?
+  porcentagem_ate    Int?
+  descricao          String?          @db.Text
+  und                String?          @db.VarChar(10)
+  desc               Float?
+  obs                String?          @db.Text
+  metas_indicador    metas_indicador? @relation(fields: [id_metas_indicador], references: [id_metas_indicador])
+  metas_setor        metas_setor?     @relation(fields: [id_metas_setor], references: [id_metas_setor])
+
+  @@index([id_metas_indicador], name: "FK_metas_regua_metas_indicador")
+  @@index([id_metas_setor], name: "FK_metas_regua_metas_setor")
+}
+
+model metas_setor {
+  id_metas_setor      Int               @id @default(autoincrement())
+  setor               String?           @unique @db.VarChar(50)
+  status_setor        String?           @db.VarChar(50)
+  data_inicio         DateTime?         @db.Date
+  data_fim            DateTime?         @db.Date
+  data_meta_alcancada DateTime?         @db.Date
+  porcentagem_setor   Decimal?          @db.Decimal(10, 2)
+  consideracoes       String?           @db.Text
+  metas_indicador     metas_indicador[]
+  metas_itens         metas_itens[]
+  metas_regua         metas_regua[]
+}
+
+model modules {
+  id           Int            @id @default(autoincrement()) @db.UnsignedInt
+  name         String         @db.VarChar(100)
+  base_url     String?        @db.VarChar(255)
+  icon         String?        @db.VarChar(100)
+  slug         String?        @db.VarChar(100)
+  order        Int?           @default(0)
+  applications applications[]
+  groups       groups[]
+}
+
+model nvocc_armazenagem_custo {
+  id_nvocc_armazenagem_custo Int       @id @default(autoincrement())
+  data                       DateTime? @db.Date
+  mes                        DateTime? @db.Date
+  terminal                   String?   @db.VarChar(255)
+  custo_armazenagem          Decimal?  @db.Decimal(20, 2)
+  data_hora_atualizacao      DateTime? @db.DateTime(0)
+  responsavel_atualizacao    String?   @db.VarChar(80)
+}
+
+model nvocc_armazenagem_custo_test {
+  id_nvocc_armazenagem_custo Int       @id @default(autoincrement())
+  data                       DateTime? @db.Date
+  mes                        DateTime? @db.Date
+  terminal                   String?   @db.VarChar(255)
+  custo_armazenagem          Decimal?  @db.Decimal(20, 2)
+  data_hora_atualizacao      DateTime? @db.DateTime(0)
+  responsavel_atualizacao    String?   @db.VarChar(80)
+}
+
+model nvocc_clientes {
+  id_nvocc_clientes Int     @id @default(autoincrement())
+  cliente           String? @db.VarChar(50)
+}
+
+model nvocc_destino {
+  id_nvocc_destino Int     @id @default(autoincrement())
+  destino          String? @db.VarChar(50)
+}
+
+model nvocc_dta {
+  id_nvocc_dta             Int       @id @default(autoincrement())
+  status_nvocc             String?   @db.VarChar(50)
+  semana                   Int?
+  veic                     Int?
+  data_nvocc               DateTime? @db.Date
+  agenciador               String?   @db.VarChar(100)
+  ref_imp                  String?   @db.VarChar(100)
+  exportador               String?   @db.VarChar(100)
+  dta_due                  String?   @db.VarChar(100)
+  cte_cgm                  String?   @db.VarChar(100)
+  placa                    String?   @db.VarChar(100)
+  motorista                String?   @db.VarChar(100)
+  tipo_veiculo             String?   @db.VarChar(100)
+  local_coleta             String?   @db.VarChar(100)
+  destino                  String?   @db.VarChar(100)
+  peso                     Decimal?  @db.Decimal(20, 2)
+  rs_mercadoria            Decimal?  @db.Decimal(20, 2)
+  m3                       Decimal?  @db.Decimal(20, 2)
+  frete_peso               Decimal?  @db.Decimal(20, 2)
+  adicionais               Decimal?  @db.Decimal(20, 2)
+  pedagio                  Decimal?  @db.Decimal(20, 2)
+  imp_suspenso             Decimal?  @db.Decimal(20, 2)
+  ad_valorem               Decimal?  @db.Decimal(20, 2)
+  gris                     Decimal?  @db.Decimal(20, 2)
+  icms                     Decimal?  @db.Decimal(20, 2)
+  data                     String?   @db.VarChar(50)
+  iss                      String?   @db.VarChar(100)
+  retorno_de_carga         String?   @db.VarChar(100)
+  estadia                  String?   @db.VarChar(100)
+  ajudante_carga           String?   @db.VarChar(100)
+  carga_imo_anvisa         String?   @db.VarChar(100)
+  total_frete              Decimal?  @db.Decimal(20, 2)
+  validador                String?   @db.VarChar(100)
+  observacao_ajuste_motivo String?   @db.MediumText
+  data2                    DateTime? @db.Date
+  mes                      String?   @db.VarChar(50)
+  veiculo_consolidado      String?   @db.VarChar(50)
+  local_coleta_consolidado String?   @db.VarChar(50)
+  tipo_veiculo2            String?   @db.VarChar(50)
+  destino2                 String?   @db.VarChar(50)
+  tipo_operacao            String?   @db.VarChar(50)
+  data_hora_atualizacao    DateTime? @db.DateTime(0)
+  responsavel_atualizacao  String?   @db.VarChar(80)
+}
+
+model nvocc_dta_copy {
+  id_nvocc_dta             Int       @id @default(autoincrement())
+  status_nvocc             String?   @db.VarChar(50)
+  semana                   Int?
+  veic                     Int?
+  data_nvocc               DateTime? @db.Date
+  agenciador               String?   @db.VarChar(100)
+  ref_imp                  String?   @db.VarChar(100)
+  exportador               String?   @db.VarChar(100)
+  dta_due                  String?   @db.VarChar(100)
+  cte_cgm                  String?   @db.VarChar(100)
+  placa                    String?   @db.VarChar(100)
+  motorista                String?   @db.VarChar(100)
+  tipo_veiculo             String?   @db.VarChar(100)
+  local_coleta             String?   @db.VarChar(100)
+  destino                  String?   @db.VarChar(100)
+  peso                     Decimal?  @db.Decimal(20, 2)
+  rs_mercadoria            Decimal?  @db.Decimal(20, 2)
+  m3                       Decimal?  @db.Decimal(20, 2)
+  frete_peso               Decimal?  @db.Decimal(20, 2)
+  adicionais               Decimal?  @db.Decimal(20, 2)
+  pedagio                  Decimal?  @db.Decimal(20, 2)
+  imp_suspenso             Decimal?  @db.Decimal(20, 2)
+  ad_valorem               Decimal?  @db.Decimal(20, 2)
+  gris                     Decimal?  @db.Decimal(20, 2)
+  icms                     Decimal?  @db.Decimal(20, 2)
+  data                     String?   @db.VarChar(50)
+  iss                      String?   @db.VarChar(100)
+  retorno_de_carga         String?   @db.VarChar(100)
+  estadia                  String?   @db.VarChar(100)
+  ajudante_carga           String?   @db.VarChar(100)
+  carga_imo_anvisa         String?   @db.VarChar(100)
+  total_frete              Decimal?  @db.Decimal(20, 2)
+  validador                String?   @db.VarChar(100)
+  observacao_ajuste_motivo String?   @db.MediumText
+  data2                    DateTime? @db.Date
+  mes                      String?   @db.VarChar(50)
+  veiculo_consolidado      String?   @db.VarChar(50)
+  local_coleta_consolidado String?   @db.VarChar(50)
+  tipo_veiculo2            String?   @db.VarChar(50)
+  destino2                 String?   @db.VarChar(50)
+  tipo_operacao            String?   @db.VarChar(50)
+  data_hora_atualizacao    DateTime? @db.DateTime(0)
+  responsavel_atualizacao  String?   @db.VarChar(80)
+}
+
+model nvocc_dta_custo_viagens {
+  id_nvocc_dta_custo_viagens     Int       @id @default(autoincrement())
+  destino                        String?   @db.VarChar(80)
+  valor_por_w_m                  Decimal?  @db.Decimal(10, 2)
+  valor_minimo_por_embarque_15m3 Decimal?  @db.Decimal(10, 2)
+  tipo_operacao                  String?   @db.VarChar(50)
+  data_inicio                    DateTime? @db.DateTime(0)
+  data_fim                       DateTime? @db.DateTime(0)
+  status_custo                   String?   @db.VarChar(50)
+  responsavel_atualizacao        String?   @db.VarChar(50)
+}
+
+model nvocc_ltl_2 {
+  id_nvocc_ltl      Int       @id @default(autoincrement())
+  mes               DateTime? @db.Date
+  recurso           String?   @db.VarChar(50)
+  ltl_viagens       Int?
+  pb                Float?    @db.Float
+  cbm               Float?    @db.Float
+  ltl_viagens_2     Int?
+  pb_2              Float?    @db.Float
+  cbm_2             Float?    @db.Float
+  lcl_viagens       Int?
+  pb_lcl            Float?    @db.Float
+  cbm_lcl           Float?    @db.Float
+  lcl_viagens_2     Int?
+  pb_lcl_2          Float?    @db.Float
+  cbm_lcl_2         Float?    @db.Float
+  remocao_viagens   Int?
+  pb_remocao        Float?    @db.Float
+  cbm_remocao       Float?    @db.Float
+  remocao_viagens_2 Float?    @db.Float
+  pb_remocao_2      Float?    @db.Float
+  m3                Float?    @db.Float
+}
+
+model nvocc_ltl_exp_custos {
+  id_nvocc_ltl_exp_custos Int       @id @default(autoincrement())
+  data_ltl                DateTime? @db.Date
+  mes                     DateTime? @db.Date
+  despesa                 String?   @db.VarChar(50)
+  viagens                 Int?
+  peso_bruto              String?   @db.VarChar(50)
+  m3_total                String?   @db.VarChar(50)
+  recurso                 String?   @db.VarChar(50)
+  ltl_viagens             Int?
+  pb_ltl                  String?   @db.VarChar(50)
+  m3_ltl                  String?   @db.VarChar(50)
+  lcl_viagens             Int?
+  pb_lcl                  String?   @db.VarChar(50)
+  m3_lcl                  String?   @db.VarChar(50)
+  remocao_viagens         Int?
+  pb_remocao              String?   @db.VarChar(50)
+  m3_remocao              String?   @db.VarChar(50)
+}
+
+model nvocc_ltl_expo_agentes {
+  id_nvocc_ltl_expo_agentes Int       @id @default(autoincrement())
+  data_ltl                  DateTime? @db.Date
+  mes                       DateTime? @db.Date
+  receita                   String?   @db.VarChar(50)
+  m3                        String?   @db.VarChar(50)
+  reservas                  Int?
+  sem_remonte               Int?
+  cargas_imo                Int?
+  agente                    String?   @db.VarChar(50)
+}
+
+model nvocc_ltl_exportacao {
+  id_nvocc_ltl          Int       @id @default(autoincrement())
+  pedido                DateTime? @db.DateTime(0)
+  sem                   Int?
+  agenda                DateTime? @db.DateTime(0)
+  st                    String?   @db.VarChar(50)
+  reserva               String?   @db.VarChar(50)
+  coleta                String?   @db.VarChar(50)
+  exportador            String?   @db.VarChar(50)
+  invoice               String?   @db.VarChar(50)
+  atendente             String?   @db.VarChar(50)
+  regiao                String?   @db.VarChar(50)
+  qtde                  Int?
+  carga                 String?   @db.VarChar(50)
+  peso                  Decimal?  @db.Decimal(20, 3)
+  nf                    String?   @db.VarChar(50)
+  rs_nf                 Decimal?  @db.Decimal(20, 3)
+  m3                    Decimal?  @db.Decimal(20, 3)
+  medida_usada          Decimal?  @db.Decimal(20, 3)
+  estadia_hs            String?   @db.VarChar(50)
+  remonte_empilhavel    String?   @db.VarChar(10)
+  imo                   String?   @db.VarChar(10)
+  km                    String?   @db.VarChar(50)
+  compra                String?   @db.VarChar(50)
+  venda                 String?   @db.VarChar(50)
+  c                     String?   @db.VarChar(50)
+  frete                 String?   @db.VarChar(50)
+  frete_base            String?   @db.VarChar(50)
+  ajud                  String?   @db.VarChar(50)
+  cp                    String?   @db.VarChar(50)
+  adv                   String?   @db.VarChar(50)
+  compra2               String?   @db.VarChar(50)
+  v                     String?   @db.VarChar(50)
+  frete2                String?   @db.VarChar(50)
+  ajud2                 String?   @db.VarChar(50)
+  cp2                   String?   @db.VarChar(50)
+  adv2                  String?   @db.VarChar(50)
+  venda2                String?   @db.VarChar(50)
+  profit                String?   @db.VarChar(50)
+  estadia               String?   @db.VarChar(50)
+  total                 String?   @db.VarChar(50)
+  data_emissao_cte      DateTime? @db.Date
+  placa                 String?   @db.VarChar(50)
+  motorista             String?   @db.VarChar(80)
+  ct_e                  String?   @db.VarChar(50)
+  obs                   String?   @db.LongText
+  data_hora_atualizacao DateTime? @db.DateTime(0)
+  agenciador            String?   @db.VarChar(80)
+  mes                   String?   @db.VarChar(80)
+  ajudante              String?   @db.VarChar(50)
+  recurso               String?   @db.VarChar(50)
+  perfil_recurso        String?   @db.VarChar(50)
+  complementar          String?   @db.VarChar(10)
+  usuario_responsavel   String?   @db.VarChar(80)
+}
+
+model nvocc_ltl_exportacao1 {
+  id_nvocc_ltl_exportacao          Int                                @id @default(autoincrement())
+  pedido                           DateTime?                          @db.DateTime(0)
+  sem                              Int?
+  agenda                           DateTime?                          @db.DateTime(0)
+  st                               Int?
+  reserva                          String?                            @db.VarChar(15)
+  coleta                           String?                            @db.VarChar(100)
+  exportador                       String?                            @db.VarChar(50)
+  invoice                          String?                            @db.VarChar(70)
+  agente                           String?                            @db.VarChar(100)
+  planta_regiao                    String?                            @db.VarChar(50)
+  qtde                             Int?
+  carga                            String?                            @db.VarChar(20)
+  peso                             Float?
+  nf                               String?                            @db.VarChar(50)
+  rs_nf                            Float?
+  m_3                              Float?
+  medida_usada                     Float?
+  remonte                          String?                            @db.VarChar(3)
+  imo                              String?                            @db.VarChar(10)
+  ajud                             String?                            @db.VarChar(10)
+  km                               Int?
+  empilhavel                       String?                            @db.VarChar(10)
+  estadia_hs                       Int?
+  venda                            String?                            @db.VarChar(50)
+  frete_base                       Float?
+  frete                            Float?
+  cp                               Float?
+  estadia_ajud                     Float?
+  adv                              Decimal?                           @db.Decimal(20, 2)
+  total                            Decimal?                           @db.Decimal(20, 2)
+  placa                            String?                            @db.VarChar(10)
+  motorista                        String?                            @db.VarChar(70)
+  cte_complementar                 String?                            @db.VarChar(3)
+  ct_e                             String?                            @db.VarChar(50)
+  obs                              String?                            @db.VarChar(255)
+  chave_nf_e                       Int?
+  agencia                          String?                            @db.VarChar(10)
+  compra                           Float?
+  c                                Float?
+  compra_allink                    Float?
+  v                                Float?
+  profit                           Float?
+  venda_cte                        Float?
+  adv_cte                          Float?
+  cp_cte                           Float?
+  ajud_allink                      String?                            @db.VarChar(10)
+  ajud_cte                         String?                            @db.VarChar(10)
+  frete_cte                        Float?
+  nvocc_ltl_exportacao_nota_fiscal nvocc_ltl_exportacao_nota_fiscal[]
+}
+
+model nvocc_ltl_exportacao_chapeira {
+  id_nvocc_ltl_exportacao_chapeira Int     @id @default(autoincrement())
+  placa                            String? @db.VarChar(10)
+  motorista                        String? @db.VarChar(60)
+  tipo_veiculo                     String? @db.VarChar(15)
+  capacidade                       Int?
+  quantidade_estrados              Int?
+  dimensoes                        String? @db.VarChar(30)
+}
+
+model nvocc_ltl_exportacao_cidade_km {
+  id_nvocc_ltl_exportacao_cidade_km Int     @id @default(autoincrement())
+  cidade                            String? @db.VarChar(50)
+  km                                Int?
+  faixa                             String? @db.VarChar(50)
+  prazo                             String? @db.VarChar(12)
+}
+
+model nvocc_ltl_exportacao_km {
+  id_nvocc_ltl_exportacao_km Int     @id @default(autoincrement())
+  coleta                     String? @db.VarChar(50)
+  km                         Int?
+}
+
+model nvocc_ltl_exportacao_nota_fiscal {
+  id_nvocc_ltl_exportacao_nota_fiscal Int                    @id @default(autoincrement())
+  id_nvocc_ltl_exportacao             Int?
+  nf                                  String?                @db.VarChar(50)
+  rs_nf                               Decimal?               @db.Decimal(20, 2)
+  nvocc_ltl_exportacao1               nvocc_ltl_exportacao1? @relation(fields: [id_nvocc_ltl_exportacao], references: [id_nvocc_ltl_exportacao])
+
+  @@index([id_nvocc_ltl_exportacao], name: "FK_nvocc_ltl_exportacao_nota_fiscal_nvocc_ltl_exportacao")
+}
+
+model nvocc_ltl_exportacao_planta_regiao {
+  id_nvocc_ltl_exportacao_planta_regiao Int     @id @default(autoincrement())
+  customer                              String? @db.VarChar(80)
+  planta_regiao                         String? @db.VarChar(20)
+  agencia                               String? @db.VarChar(20)
+}
+
+model nvocc_ltl_exportacao_test {
+  id_nvocc_ltl          Int       @id @default(autoincrement())
+  pedido                DateTime? @db.DateTime(0)
+  sem                   Int?
+  agenda                DateTime? @db.DateTime(0)
+  st                    String?   @db.VarChar(50)
+  reserva               String?   @db.VarChar(50)
+  coleta                String?   @db.VarChar(50)
+  exportador            String?   @db.VarChar(80)
+  invoice               String?   @db.VarChar(50)
+  atendente             String?   @db.VarChar(50)
+  regiao                String?   @db.VarChar(50)
+  qtde                  Int?
+  carga                 String?   @db.VarChar(50)
+  peso                  Decimal?  @db.Decimal(20, 3)
+  nf                    String?   @db.VarChar(50)
+  rs_nf                 Decimal?  @db.Decimal(20, 3)
+  m3                    Decimal?  @db.Decimal(20, 3)
+  medida_usada          Decimal?  @db.Decimal(20, 3)
+  estadia_hs            String?   @db.VarChar(50)
+  remonte_empilhavel    String?   @db.VarChar(10)
+  imo                   String?   @db.VarChar(10)
+  km                    String?   @db.VarChar(50)
+  compra                String?   @db.VarChar(50)
+  venda                 String?   @db.VarChar(50)
+  c                     String?   @db.VarChar(50)
+  frete                 String?   @db.VarChar(50)
+  frete_base            String?   @db.VarChar(50)
+  ajud                  String?   @db.VarChar(50)
+  cp                    String?   @db.VarChar(50)
+  adv                   String?   @db.VarChar(50)
+  compra2               String?   @db.VarChar(50)
+  v                     String?   @db.VarChar(50)
+  frete2                String?   @db.VarChar(50)
+  ajud2                 String?   @db.VarChar(50)
+  cp2                   String?   @db.VarChar(50)
+  adv2                  String?   @db.VarChar(50)
+  venda2                String?   @db.VarChar(50)
+  profit                String?   @db.VarChar(50)
+  estadia               String?   @db.VarChar(50)
+  total                 String?   @db.VarChar(50)
+  data_emissao_cte      DateTime? @db.Date
+  placa                 String?   @db.VarChar(50)
+  motorista             String?   @db.VarChar(80)
+  ct_e                  String?   @db.VarChar(50)
+  obs                   String?   @db.LongText
+  data_hora_atualizacao DateTime? @db.DateTime(0)
+  agenciador            String?   @db.VarChar(80)
+  mes                   String?   @db.VarChar(80)
+  ajudante              String?   @db.VarChar(50)
+  recurso               String?   @db.VarChar(50)
+  perfil_recurso        String?   @db.VarChar(50)
+  complementar          String?   @db.VarChar(10)
+  usuario_responsavel   String?   @db.VarChar(80)
+}
+
+model nvocc_ltl_importacao {
+  id_nvocc_ltl_importacao Int       @id @default(autoincrement())
+  agente                  String?   @db.VarChar(50)
+  cidade                  String?   @db.VarChar(70)
+  terminal                String?   @db.VarChar(70)
+  importador              String?   @db.VarChar(60)
+  di                      String?   @db.VarChar(50)
+  volumes                 String?   @db.VarChar(80)
+  peso                    Decimal?  @db.Decimal(20, 3)
+  m3                      Decimal?  @db.Decimal(10, 3)
+  data_entrega            DateTime? @db.Date
+  ano                     Int?
+  mes                     String?   @db.VarChar(50)
+  n_mes                   Int?
+  recurso                 String?   @db.VarChar(50)
+  data_hora_atualizacao   DateTime? @db.DateTime(0)
+  usuario_respons_vel     String?   @map("usuario_responsável") @db.VarChar(80)
+  bl                      String?   @db.VarChar(80)
+  ref                     String?   @db.VarChar(80)
+  valor_nf                Decimal?  @db.Decimal(10, 2)
+  peso_cubado             Decimal?  @db.Decimal(10, 2)
+  empilhavel              String?   @db.VarChar(50)
+  ajudantes               String?   @db.VarChar(50)
+  imo                     String?   @db.VarChar(50)
+  anvisa                  String?   @db.VarChar(50)
+  observacoes_gerais      String?   @db.Text
+  valor_bruto             Decimal?  @db.Decimal(10, 2)
+  valor_liquido           Decimal?  @db.Decimal(10, 2)
+  veiculo_placa           String?   @db.VarChar(20)
+  tipo_veiculo            String?   @db.VarChar(255)
+  motorista               String?   @db.VarChar(255)
+  st                      String?   @db.VarChar(100)
+  cte                     String?   @db.VarChar(100)
+  mdfe                    String?   @db.VarChar(100)
+  chegada_cliente         DateTime? @db.DateTime(0)
+  saida_cliente           DateTime? @db.DateTime(0)
+  permanencia             DateTime? @db.Time(0)
+  minutos                 Int?
+  estadia                 Int?
+  free_time               Decimal?  @db.Decimal(10, 2)
+  t_minutos               DateTime? @db.Time(0)
+  periodo                 Int?
+  valor                   Decimal?  @db.Decimal(10, 2)
+  observacao              String?   @db.Text
+}
+
+model nvocc_ltl_importacao_test {
+  id_nvocc_ltl_importacao Int       @id @default(autoincrement())
+  agente                  String?   @db.VarChar(50)
+  cidade                  String?   @db.VarChar(70)
+  terminal                String?   @db.VarChar(70)
+  importador              String?   @db.VarChar(60)
+  di                      String?   @db.VarChar(50)
+  volumes                 String?   @db.VarChar(80)
+  peso                    Decimal?  @db.Decimal(20, 3)
+  m3                      Decimal?  @db.Decimal(10, 3)
+  data_entrega            DateTime? @db.Date
+  ano                     Int?
+  mes                     String?   @db.VarChar(50)
+  n_mes                   Int?
+  recurso                 String?   @db.VarChar(50)
+  bl                      String?   @db.VarChar(80)
+  ref                     String?   @db.VarChar(80)
+  valor_nf                Decimal?  @db.Decimal(10, 2)
+  peso_cubado             Decimal?  @db.Decimal(10, 2)
+  empilhavel              String?   @db.VarChar(50)
+  ajudantes               String?   @db.VarChar(50)
+  imo                     String?   @db.VarChar(50)
+  anvisa                  String?   @db.VarChar(50)
+  observacoes_gerais      String?   @db.Text
+  valor_bruto             Decimal?  @db.Decimal(10, 2)
+  valor_liquido           Decimal?  @db.Decimal(10, 2)
+  veiculo_placa           String?   @db.VarChar(20)
+  tipo_veiculo            String?   @db.VarChar(255)
+  motorista               String?   @db.VarChar(255)
+  st                      String?   @db.VarChar(100)
+  cte                     String?   @db.VarChar(100)
+  mdfe                    String?   @db.VarChar(100)
+  chegada_cliente         DateTime? @db.DateTime(0)
+  saida_cliente           DateTime? @db.DateTime(0)
+  permanencia             DateTime? @db.Time(0)
+  minutos                 Int?
+  estadia                 Int?
+  free_time               DateTime? @db.Time(0)
+  t_minutos               DateTime? @db.Time(0)
+  periodo                 Int?
+  valor                   Decimal?  @db.Decimal(10, 2)
+  observacao              String?   @db.Text
+  data_hora_atualizacao   DateTime? @db.DateTime(0)
+  usuario_respons_vel     String?   @map("usuario_responsável") @db.VarChar(80)
+}
+
+model nvocc_onepage_dta_exp {
+  id_nvocc_onepage_dta_exp Int       @id @default(autoincrement())
+  data                     DateTime? @db.Date
+  due                      String?   @db.VarChar(50)
+  tipo_veiculo             String?   @db.VarChar(50)
+  agenciador               String?   @db.VarChar(100)
+  destino                  String?   @db.VarChar(100)
+  peso                     Decimal?  @db.Decimal(20, 3)
+  m3                       Decimal?  @db.Decimal(20, 3)
+  update_at                DateTime? @default(now()) @db.DateTime(0)
+}
+
+model nvocc_onepage_dta_imp {
+  id_nvocc_onepage_dta_imp Int       @id @default(autoincrement())
+  data                     DateTime? @db.Date
+  ref_imp                  String?   @db.VarChar(50)
+  tipo_veiculo             String?   @db.VarChar(50)
+  agenciador               String?   @db.VarChar(100)
+  destino                  String?   @db.VarChar(100)
+  peso                     Decimal?  @db.Decimal(20, 3)
+  m3                       Decimal?  @db.Decimal(20, 3)
+  update_at                DateTime? @default(now()) @db.DateTime(0)
+}
+
+model nvocc_onepage_ltl_exp {
+  id_nvocc_onepage_ltl_exp Int       @id @default(autoincrement())
+  agenda                   DateTime? @db.Date
+  agente                   String?   @db.VarChar(50)
+  reserva                  String?   @db.VarChar(50)
+  peso                     Decimal?  @db.Decimal(20, 3)
+  remonte                  String?   @db.VarChar(20)
+  m3                       Decimal?  @db.Decimal(20, 6)
+  recurso                  String?   @db.VarChar(20)
+  perfil_recurso           String?   @db.VarChar(20)
+  complementar             String?   @db.VarChar(10)
+  update_at                DateTime? @default(now()) @db.DateTime(0)
+}
+
+model nvocc_onepage_ltl_exp_viagens {
+  id_nvocc_onepage_ltl_exp_viagens Int       @id @default(autoincrement())
+  agenda                           DateTime? @db.Date
+  viagens                          Int?
+  update_at                        DateTime? @default(now()) @db.DateTime(0)
+}
+
+model nvocc_onepage_ltl_imp {
+  id_nvocc_onepage_ltl_imp Int       @id @default(autoincrement())
+  data_entrega             DateTime? @db.Date
+  agente                   String?   @db.VarChar(50)
+  di                       String?   @db.VarChar(50)
+  peso                     Decimal?  @db.Decimal(20, 3)
+  m3                       Decimal?  @db.Decimal(20, 3)
+  recurso                  String?   @db.VarChar(30)
+  update_at                DateTime? @default(now()) @db.DateTime(0)
+}
+
+model nvocc_onepage_remocoes {
+  id_nvocc_onepage_remocoes Int       @id @default(autoincrement())
+  semana                    String?   @db.VarChar(10)
+  mes                       String?   @db.VarChar(20)
+  data_solicitacao          DateTime? @db.DateTime(0)
+  data_deadline             DateTime? @db.DateTime(0)
+  data_execucao             DateTime? @db.Date
+  agente                    String?   @db.VarChar(50)
+  ref_cliente               String?   @db.VarChar(50)
+  pb                        Decimal?  @db.Decimal(20, 3)
+  m3                        Decimal?  @db.Decimal(20, 3)
+  terminal                  String?   @db.VarChar(20)
+  recurso                   String?   @db.VarChar(20)
+  update_at                 DateTime? @default(now()) @db.DateTime(0)
+}
+
+model nvocc_pendencia {
+  id_nvocc_pendencia Int     @id @default(autoincrement())
+  pendencia          String? @db.VarChar(50)
+}
+
+model nvocc_projecao_consolidado {
+  id_nvocc_projecao_consolidado Int       @id @default(autoincrement())
+  data_nvocc                    DateTime? @db.Date
+  mes_nvocc                     String?   @db.VarChar(50)
+  despesa_tr                    Decimal?  @db.Decimal(12, 3)
+  receita_tr                    Decimal?  @db.Decimal(12, 3)
+  armazenagem                   Decimal?  @db.Decimal(12, 3)
+  saldo_tr                      Decimal?  @db.Decimal(12, 3)
+  modalidade                    String?   @db.VarChar(50)
+  observacoes                   String?   @db.VarChar(50)
+  viagens                       Int?
+  data_hora_atualizacao         DateTime? @db.DateTime(0)
+  responsavel_atualizacao       String?   @db.VarChar(80)
+}
+
+model nvocc_projecao_consolidado_test {
+  id_nvocc_projecao_consolidado Int       @id @default(autoincrement())
+  data_nvocc                    DateTime? @db.Date
+  mes_nvocc                     String?   @db.VarChar(50)
+  despesa_tr                    Decimal?  @db.Decimal(12, 3)
+  receita_tr                    Decimal?  @db.Decimal(12, 3)
+  armazenagem                   Decimal?  @db.Decimal(12, 3)
+  saldo_tr                      Decimal?  @db.Decimal(12, 3)
+  modalidade                    String?   @db.VarChar(50)
+  observacoes                   String?   @db.VarChar(50)
+  viagens                       Int?
+  data_hora_atualizacao         DateTime? @db.DateTime(0)
+  responsavel_atualizacao       String?   @db.VarChar(80)
+}
+
+model nvocc_receita_despesa_ltl {
+  id_nvocc_receita_despesa_ltl Int       @id @default(autoincrement())
+  data_receita                 DateTime? @db.Date
+  mes                          DateTime? @db.Date
+  receita                      String?   @db.VarChar(50)
+  despesa                      String?   @db.VarChar(50)
+  diferenca                    String?   @db.VarChar(50)
+}
+
+model nvocc_remocao {
+  id_nvocc_remocao        Int       @id @default(autoincrement())
+  semana                  String?   @db.VarChar(50)
+  mes                     String?   @db.VarChar(50)
+  reserva_allink          String?   @db.VarChar(80)
+  agente                  String?   @db.VarChar(80)
+  cliente                 String?   @db.VarChar(80)
+  ref_cliente             String?   @db.VarChar(80)
+  terminal                String?   @db.VarChar(80)
+  imo                     String?   @db.VarChar(10)
+  qtde                    Int?
+  carga                   String?   @db.VarChar(80)
+  pb                      Decimal?  @db.Decimal(15, 3)
+  m3                      Decimal?  @db.Decimal(15, 3)
+  remonte                 String?   @db.VarChar(10)
+  solicitacao             DateTime? @db.DateTime(0)
+  deadline                DateTime? @db.DateTime(0)
+  execucao                DateTime? @db.Date
+  recurso                 String?   @db.VarChar(80)
+  veiculo                 String?   @db.VarChar(80)
+  motorista               String?   @db.VarChar(80)
+  custo_rs                Decimal?  @db.Decimal(15, 2)
+  data_hora_atualizacao   DateTime? @db.DateTime(0)
+  responsavel_atualizacao String?   @db.VarChar(80)
+}
+
+model nvocc_remocao_custo {
+  id_nvocc_remocao_custo Int       @id @default(autoincrement())
+  data_nvocc             DateTime? @db.Date
+  mes                    DateTime? @db.Date
+  despesa                Decimal?  @db.Decimal(20, 2)
+  viagens                Int?
+  peso_bruto             Decimal?  @db.Decimal(20, 3)
+  m3                     Decimal?  @db.Decimal(20, 3)
+  recursos               String?   @db.VarChar(50)
+}
+
+model nvocc_terminal {
+  id_nvocc_terminal Int     @id @default(autoincrement())
+  terminal          String? @db.VarChar(50)
+}
+
+model nvocc_tipos {
+  id_nvocc_tipos Int     @id @default(autoincrement())
+  nvocc_tipos    String? @db.VarChar(50)
+}
+
+model painel_indicadores {
+  id_painel_indicadores  Int       @id @default(autoincrement())
+  setor                  String?   @db.VarChar(100)
+  indicador              String?   @db.Text
+  objetivo               String?   @db.Text
+  base_de_atualizacao    String?   @db.VarChar(255)
+  metrica                String?   @db.Text
+  frequencia_atualizacao String?   @db.VarChar(100)
+  resp_preenchimento     String?   @db.VarChar(100)
+  resp_indicador         String?   @db.VarChar(100)
+  url                    String?   @db.VarChar(255)
+  usuario                String?   @db.VarChar(50)
+  update_at              DateTime? @default(now()) @db.DateTime(0)
+}
+
+model powerbi_atualizar_dataset {
+  id_atualizar_dataset Int       @id @default(autoincrement())
+  nome_relatorio       String?   @default("0") @db.VarChar(100)
+  atualizado           Int?      @default(0)
+  erro                 String?   @db.TinyText
+  data_solicitada      DateTime? @default(now()) @db.DateTime(0)
+  data_processada      DateTime? @db.DateTime(0)
+
+  @@index([atualizado], name: "atualizado")
+  @@index([nome_relatorio], name: "nome_relatorio")
+}
+
+model powerbi_log {
+  id_powerbi_log Int       @id @default(autoincrement())
+  data           DateTime? @default(now()) @db.DateTime(0)
+  evento         String?   @db.TinyText
+  obs            String?   @db.VarChar(50)
+  conta          String?   @db.VarChar(10)
+  grupo          String?   @db.VarChar(1)
+  usuario        String?   @db.VarChar(20)
+  abertoEm       String?   @db.VarChar(20)
+  min            Decimal?  @db.Decimal(10, 2)
+
+  @@index([data], name: "data")
+  @@index([obs], name: "obs")
+}
+
+model powerbi_relatorios {
+  nome                    String    @id @default("-") @db.VarChar(50)
+  id_relatorio            String?   @unique @db.VarChar(36)
+  id_dataset              String?   @db.VarChar(36)
+  em_uso                  Int?      @default(1)
+  grupo                   Int?
+  update_at               DateTime? @default(now()) @db.DateTime(0)
+  solicitacao_atualizacao DateTime? @db.DateTime(0)
+  relatorio_aberto        DateTime? @db.DateTime(0)
+  data_processada         DateTime? @db.DateTime(0)
+  aplicacao               String?   @db.VarChar(50)
+  obs                     String?   @db.VarChar(50)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model powerbi_token {
+  tipo          String?   @db.VarChar(50)
+  token         String?   @db.LongText
+  data          DateTime? @default(now()) @db.DateTime(0)
+  conta         String?   @db.VarChar(50)
+  grupo         Int?
+  obs           String?   @db.VarChar(50)
+  emAtualizacao Int?      @default(0)
+
+  @@ignore
+}
+
+model projeto_consideracoes {
+  id_projeto_consideracoes Int       @id @default(autoincrement())
+  id_projeto               Int?
+  data_consideracao        DateTime? @db.Date
+  consideracao             String?   @db.MediumText
+  projeto                  String?   @db.VarChar(80)
+  projetos                 projetos? @relation(fields: [id_projeto], references: [id_projetos])
+
+  @@index([id_projeto], name: "FK_projeto_consideracoes_projetos")
+}
+
+model projeto_modulos_consideracoes {
+  id_projeto_modulos_consideracoes Int       @id @default(autoincrement())
+  id_projetos_principal            Int?
+  data_consideracao                DateTime? @db.Date
+  consideracao                     String?   @db.MediumText
+  projeto                          String?   @db.VarChar(80)
+}
+
+model projetos {
+  id_projetos           Int                     @id @default(autoincrement())
+  projeto               String?                 @db.VarChar(150)
+  descricao             String?                 @db.MediumText
+  data_inicio           DateTime?               @db.Date
+  data_fim              DateTime?               @db.Date
+  data_conclusao        DateTime?               @db.Date
+  porcentagem           Int?
+  status_projeto        String?                 @db.VarChar(15)
+  qtd_dias_uteis        Int?
+  area                  String?                 @db.VarChar(15)
+  tipo                  String?                 @db.VarChar(15)
+  orcamento             Decimal?                @db.Decimal(10, 2)
+  realizado             Decimal?                @db.Decimal(10, 2)
+  saldo                 Decimal?                @db.Decimal(10, 2)
+  ordem_investimento    String?                 @db.VarChar(20)
+  login_responsavel     String?                 @db.VarChar(60)
+  nome_responsavel      String?                 @db.VarChar(80)
+  budget                Decimal?                @db.Decimal(10, 2)
+  setor                 String?                 @db.VarChar(80)
+  projeto_consideracoes projeto_consideracoes[]
+  projetos_principal    projetos_principal[]
+}
+
+model projetos_capex_opex {
+  id_projetos_capex_opex Int     @id @default(autoincrement())
+  capex_opex             String? @db.VarChar(20)
+  id_projetos_principal  Int?
+}
+
+model projetos_gastos {
+  id_projetos_gastos  Int       @id @default(autoincrement())
+  id_projeto          Int?
+  id_modulo           Int?
+  projeto             String?   @db.VarChar(50)
+  modulo              String?   @db.VarChar(50)
+  data_gasto          DateTime? @db.Date
+  valor               Decimal?  @db.Decimal(20, 2)
+  data_atualizacao    DateTime? @db.DateTime(0)
+  usuario_responsavel String?   @db.VarChar(50)
+}
+
+model projetos_itens {
+  id_projetos_itens     Int       @id @default(autoincrement())
+  id_projetos_principal Int?
+  descricao_item        String?   @db.VarChar(255)
+  responsavel           String?   @db.VarChar(50)
+  empresa               String?   @db.VarChar(50)
+  data_inicio           DateTime? @db.DateTime(0)
+  data_fim              DateTime? @db.DateTime(0)
+  data_conclusao        DateTime? @db.DateTime(0)
+  porcentagem           Int?
+  observacao            String?   @db.VarChar(255)
+  status_item           String?   @db.VarChar(15)
+  qtd_dias_uteis        Int?
+}
+
+model projetos_itens_empresa {
+  id_projetos_itens_empresa Int     @id @default(autoincrement())
+  empresa                   String? @db.VarChar(50)
+}
+
+model projetos_principal {
+  id_projetos_principal    Int       @id @default(autoincrement())
+  id_projeto               Int?
+  responsavel              String?   @db.VarChar(255)
+  responsavel_2            String?   @db.VarChar(255)
+  nome_projeto             String?   @db.VarChar(100)
+  descricao_projeto        String?   @db.Text
+  qtd_planejado            Int?
+  qtd_executado            Int?
+  qtd_atrasado             Int?
+  data_criacao             DateTime? @db.DateTime(0)
+  data_inicio              DateTime? @db.DateTime(0)
+  data_fim                 DateTime? @db.DateTime(0)
+  data_conclusao           DateTime? @db.DateTime(0)
+  data_atualizacao         DateTime? @db.DateTime(0)
+  porcentagem              Int?
+  status_projeto_principal String?   @db.VarChar(50)
+  projeto                  String?   @db.VarChar(200)
+  inf_investimento         String?   @db.VarChar(50)
+  valor_investimento       Decimal?  @db.Decimal(10, 0)
+  opex_capex               String?   @db.VarChar(50)
+  qtd_dis_uteis            Int?
+  nome_responsavel1        String?   @db.VarChar(80)
+  nome_responsavel2        String?   @db.VarChar(80)
+  projetos                 projetos? @relation(fields: [id_projeto], references: [id_projetos])
+
+  @@index([id_projeto], name: "FK_projetos_principal_projetos")
+  @@index([responsavel], name: "responsavel")
+  @@index([responsavel_2], name: "responsavel_2")
+}
+
+model projetos_proximos_passos {
+  id_projetos_proximos_passos Int       @id @default(autoincrement())
+  id_projetos_mapeamento      Int?
+  descricao                   String?   @db.VarChar(150)
+  data_inicio                 DateTime? @db.Date
+  data_fim                    DateTime? @db.Date
+  data_conclusao              DateTime? @db.Date
+  status_proximos_passos      String?   @db.VarChar(50)
+  porcentagem                 Int?
+
+  @@index([id_projetos_mapeamento], name: "id_projetos_mapeamento")
+}
+
+model projetos_setor {
+  id_projetos_setor Int     @id @default(autoincrement())
+  setor             String? @db.VarChar(80)
+}
+
+model remember_me_token {
+  id         Int      @id @default(autoincrement()) @db.UnsignedInt
+  token      String   @db.MediumText
+  user_id    String   @db.VarChar(255)
+  created_at DateTime @default(now())
+
+  @@index([user_id], name: "user_id")
+}
+
+model reuniao_acao {
+  id_reuniao_acao             Int       @id @default(autoincrement())
+  id_projetos_principal       Int?
+  id_reuniao_informacao_geral Int?
+  id_reuniao_temas            Int?
+  acao                        String?   @db.VarChar(100)
+  prazo                       DateTime? @db.DateTime(0)
+  status_acao                 String?   @db.VarChar(50)
+  responsavel                 String?   @db.VarChar(50)
+
+  @@index([id_projetos_principal], name: "id_projetos_principal")
+}
+
+model reuniao_grupo {
+  id_reuniao_grupo Int     @id @default(autoincrement())
+  grupo            String? @db.VarChar(50)
+}
+
+model reuniao_informacao_geral {
+  id_reuniao_informacao_geral Int       @id @default(autoincrement())
+  id_projetos_principal       Int?
+  id_modulo                   Int?
+  rev                         Int?
+  local                       String?   @db.VarChar(50)
+  motivo                      String?   @db.VarChar(100)
+  data_inicio                 DateTime? @db.DateTime(0)
+  data_fim                    DateTime? @db.DateTime(0)
+  status_reuniao              String?   @db.VarChar(50)
+  responsavel_ata             String?   @db.VarChar(50)
+}
+
+model reuniao_participantes {
+  id_reuniao_participantes    Int     @id @default(autoincrement())
+  id_reuniao_informacao_geral Int?
+  id_projetos_principal       Int?
+  participante                String? @db.VarChar(50)
+  cargo                       String? @db.VarChar(50)
+  email                       String? @db.VarChar(50)
+  presenca                    String? @db.VarChar(50)
+}
+
+model reuniao_participantes_grupo {
+  id_reuniao_participantes_grupo Int     @id @default(autoincrement())
+  nome                           String? @db.VarChar(50)
+  grupo                          String? @db.VarChar(50)
+  email                          String? @db.VarChar(50)
+}
+
+model reuniao_temas {
+  id_reuniao_temas            Int     @id @default(autoincrement())
+  id_projetos_principal       Int?
+  id_reuniao_informacao_geral Int?
+  tema                        String? @db.VarChar(50)
+  departamento                String? @db.VarChar(50)
+  assuntos                    String? @db.VarChar(100)
+  consideracao                String? @db.Text
+  pontos_atencao              String? @db.Text
+}
+
+model rodoviario_atrasos {
+  id_rodoviario_atrasos Int       @id @default(autoincrement())
+  agenda                DateTime? @db.Date
+  cliente               String?   @db.VarChar(100)
+  modalidade            String?   @db.VarChar(10)
+  horario               DateTime? @db.Time(0)
+  conteiner             String?   @db.VarChar(30)
+  rank_hora             Int?
+  status                String?   @db.VarChar(30)
+  just_atraso_macro     String?   @db.VarChar(255)
+  micro_atraso          String?   @db.Text
+  usuario               String?   @db.VarChar(50)
+  update_at             DateTime? @default(now()) @db.DateTime(0)
+}
+
+model rodoviario_clientes_observacao {
+  id_rodoviario_clientes_observacao Int       @id @default(autoincrement())
+  data_cliente                      DateTime? @db.Date
+  cliente                           String?   @db.VarChar(150)
+  observacao                        String?   @db.VarChar(255)
+}
+
+model rodoviario_orcado_realizado {
+  id_rodoviario_orcado_realizado Int       @id @default(autoincrement())
+  data                           DateTime? @db.Date
+  orcado_viagens                 Int?
+  planejado_viagens              Int?
+  orcado_receita                 Decimal?  @db.Decimal(20, 2)
+  planejado_receita              Decimal?  @db.Decimal(20, 2)
+  usuario                        String?   @db.VarChar(50)
+  update_at                      DateTime? @default(now()) @db.DateTime(0)
+}
+
+model rodoviario_orcado_realizado_km {
+  id_rodoviario_orcado_realizado_km Int       @id @default(autoincrement())
+  data                              DateTime? @db.Date
+  operacao                          String?   @db.VarChar(30)
+  km_orcada                         Decimal?  @db.Decimal(20, 2)
+  km_realizada                      Decimal?  @db.Decimal(20, 2)
+  realizado_litros                  Decimal?  @db.Decimal(20, 2)
+  orcado                            Decimal?  @db.Decimal(20, 2)
+  realizado                         Decimal?  @db.Decimal(20, 2)
+  realizado_km                      Decimal?  @db.Decimal(20, 2)
+  usuario                           String?   @db.VarChar(50)
+  update_at                         DateTime? @default(now()) @db.DateTime(0)
+}
+
+model rodoviario_orcado_realizado_km_test {
+  id_rodoviario_orcado_realizado_km Int       @id @default(autoincrement())
+  data                              DateTime? @db.Date
+  operacao                          String?   @db.VarChar(30)
+  km_orcada                         Decimal?  @db.Decimal(20, 2)
+  km_realizada                      Decimal?  @db.Decimal(20, 2)
+  realizado_litros                  Decimal?  @db.Decimal(20, 2)
+  orcado                            Decimal?  @db.Decimal(20, 2)
+  realizado                         Decimal?  @db.Decimal(20, 2)
+  realizado_km                      Decimal?  @db.Decimal(20, 2)
+  usuario                           String?   @db.VarChar(50)
+  update_at                         DateTime? @default(now()) @db.DateTime(0)
+}
+
+model rodoviario_orcado_realizado_test {
+  id_rodoviario_orcado_realizado Int       @id @default(autoincrement())
+  data                           DateTime? @db.Date
+  orcado_viagens                 Int?
+  planejado_viagens              Int?
+  orcado_receita                 Decimal?  @db.Decimal(20, 2)
+  planejado_receita              Decimal?  @db.Decimal(20, 2)
+  usuario                        String?   @db.VarChar(50)
+  update_at                      DateTime? @default(now()) @db.DateTime(0)
+}
+
+model rodoviario_viagens {
+  id_rodoviario_viagens Int       @id @default(autoincrement())
+  data                  DateTime? @db.DateTime(0)
+  complementar          String?   @db.VarChar(10)
+  serie                 Int?
+  frete_total           Decimal?  @db.Decimal(20, 2)
+  dimensao              String?   @db.VarChar(50)
+  cliente               String?   @db.VarChar(100)
+  tipo_rota             String?   @db.VarChar(50)
+  tipo_recurso          String?   @db.VarChar(50)
+  rota_viagem           String?   @db.VarChar(100)
+  km_rota_viagem        Int?
+  saving                Decimal?  @db.Decimal(20, 2)
+  produto_perigoso      String?   @db.VarChar(30)
+  update_at             DateTime? @default(now()) @db.DateTime(0)
+  usuario               String?   @db.VarChar(50)
+  modalidade            String?   @db.VarChar(50)
+  frota                 String?   @db.VarChar(50)
+  entrega_endereco      String?   @db.TinyText
+  agendamento           DateTime? @db.DateTime(0)
+}
+
+model rodoviario_viagens_LCL_LTL {
+  id_rodoviario_viagens_LCL_LTL Int       @id @default(autoincrement())
+  data                          DateTime? @db.DateTime(0)
+  ctrc                          String?   @db.VarChar(30)
+  cliente                       String?   @db.VarChar(100)
+  recurso                       String?   @db.VarChar(30)
+  usuario                       String?   @db.VarChar(50)
+  update_at                     DateTime? @default(now()) @db.DateTime(0)
+}
+
+model rodoviario_viagens_orcadas_cliente {
+  id_rodoviario_viagens_orcadas_cliente Int       @id @default(autoincrement())
+  cliente                               String?   @db.VarChar(100)
+  rota                                  String?   @db.VarChar(100)
+  data                                  DateTime? @db.Date
+  viagens                               Int?
+  km_rota                               Int?
+  update_at                             DateTime? @default(now()) @db.DateTime(0)
+  usuario                               String?   @db.VarChar(50)
+}
+
+model rodoviario_viagens_orcadas_cliente_test {
+  id_rodoviario_viagens_orcadas_cliente Int       @id @default(autoincrement())
+  cliente                               String?   @db.VarChar(100)
+  rota                                  String?   @db.VarChar(100)
+  data                                  DateTime? @db.Date
+  viagens                               Int?
+  km_rota                               Int?
+  update_at                             DateTime? @default(now()) @db.DateTime(0)
+  usuario                               String?   @db.VarChar(50)
+}
+
+model rodoviario_viagens_test {
+  id_rodoviario_viagens Int       @id @default(autoincrement())
+  data                  DateTime? @db.DateTime(0)
+  complementar          String?   @db.VarChar(10)
+  serie                 Int?
+  frete_total           Decimal?  @db.Decimal(20, 2)
+  dimensao              String?   @db.VarChar(50)
+  cliente               String?   @db.VarChar(100)
+  tipo_rota             String?   @db.VarChar(50)
+  tipo_recurso          String?   @db.VarChar(50)
+  rota_viagem           String?   @db.VarChar(100)
+  km_rota_viagem        Int?
+  saving                Decimal?  @db.Decimal(20, 2)
+  produto_perigoso      String?   @db.VarChar(30)
+  update_at             DateTime? @default(now()) @db.DateTime(0)
+  usuario               String?   @db.VarChar(50)
+  modalidade            String?   @db.VarChar(50)
+  frota                 String?   @db.VarChar(50)
+  entrega_endereco      String?   @db.TinyText
+  agendamento           DateTime? @db.DateTime(0)
+}
+
+model routes {
+  id               Int                @id @default(autoincrement()) @db.UnsignedInt
+  application_id   Int                @db.UnsignedInt
+  url              String?            @db.VarChar(100)
+  name             String?            @db.VarChar(50)
+  desc             String?            @db.LongText
+  applications     applications       @relation(fields: [application_id], references: [id])
+  dashboard_info   dashboard_info[]
+  group_permission group_permission[]
+
+  @@index([application_id], name: "routes_FK")
+}
+
+model sb_contratos {
+  id_sb_contratos     Int       @id @default(autoincrement())
+  fornecedor          String?   @db.VarChar(80)
+  contrato_sap        String?   @db.VarChar(50)
+  objeto_do_contrato  String?   @db.VarChar(80)
+  vigencia_inicio     DateTime? @db.Date
+  vigencia_termino    DateTime? @db.Date
+  data_para_renovacao DateTime? @db.Date
+  DATA_ATUAL          DateTime? @default(now()) @map("DATA ATUAL") @db.DateTime(0)
+  prazo_de_vencimento Int?
+  status_contrato     String?   @db.VarChar(50)
+  area_responsavel    String?   @db.VarChar(80)
+  gestor              String?   @db.VarChar(80)
+  observacoes         String?   @db.VarChar(255)
+  email_contato       String?   @db.VarChar(600)
+  dias_para_vencer    Int?
+  nome_arquivo        String?   @db.VarChar(80)
+  arquivo             Bytes?
+
+  @@index([fornecedor], name: "fornecedor")
+}
+
+model sb_contratos_cadastros_area_responsavel {
+  id_sb_contratos_cadastros_area_responsavel Int     @id @default(autoincrement())
+  area_responsavel                           String? @unique @db.VarChar(60)
+}
+
+model sb_contratos_cadastros_fornecedor {
+  id_sb_contratos_cadastros_fornecedor Int     @id @default(autoincrement())
+  fornecedor                           String? @unique @db.VarChar(60)
+  decricao                             String? @db.VarChar(255)
+
+  @@index([fornecedor], name: "fornecedor")
+}
+
+model sb_contratos_cadastros_status_contrato {
+  id_sb_contratos_cadastros_status_contrato Int     @id @default(autoincrement())
+  status_contrato                           String? @unique @db.VarChar(80)
+}
+
+model sb_documentacao_aderencia_ciot {
+  id_sb_documentacao_aderencia_ciot Int       @id @default(autoincrement())
+  semana                            Int?
+  competencia                       DateTime? @db.Date
+  volume                            Int?
+  valor_volume                      Decimal?  @db.Decimal(20, 2)
+  emitidos                          Int?
+  valor_emitido                     Decimal?  @db.Decimal(20, 2)
+  autorizado                        Int?
+  valor_autorizado                  Decimal?  @db.Decimal(20, 2)
+  rejeitado                         Int?
+  valor_rejeitad                    Decimal?  @db.Decimal(20, 2)
+  nao_emitidos                      Int?
+  valor_nao_emitidos                Decimal?  @db.Decimal(20, 2)
+  motivo_rejeicao                   String?   @db.Text
+  porcentagem_emitidos              Decimal?  @db.Decimal(10, 3)
+  porcentagem_rejeitados            Decimal?  @db.Decimal(10, 3)
+  porcentagem_nao_emitidos          Decimal?  @db.Decimal(10, 3)
+  data_atualizacao                  DateTime? @default(now()) @db.DateTime(0)
+}
+
+model sb_documentacao_estadia_recusadas {
+  id_sb_documentacao_estadia_recusada Int       @id @default(autoincrement())
+  mes                                 DateTime? @db.Date
+  tipo_documento                      String?   @db.VarChar(70)
+  numero_documento                    String?   @db.VarChar(70)
+  ctnr_cs                             String?   @db.VarChar(70)
+  referencia_do                       String?   @db.VarChar(70)
+  cliente_codigo_razao                String?   @db.VarChar(70)
+  grupo_cliente                       String?   @db.VarChar(70)
+  coleta                              String?   @db.VarChar(70)
+  coleta_endereco                     String?   @db.VarChar(70)
+  coleta_cidade                       String?   @db.VarChar(70)
+  entrega                             String?   @db.VarChar(70)
+  entrega_endereco                    String?   @db.VarChar(70)
+  entrega_cidade                      String?   @db.VarChar(70)
+  programacao_entrega                 DateTime? @db.DateTime(0)
+  documento_da_mercadoria             String?   @db.VarChar(70)
+  frota                               String?   @db.VarChar(10)
+  chegada_no_cliente                  DateTime? @db.DateTime(0)
+  saida_do_cliente                    DateTime? @db.DateTime(0)
+  status                              String?   @db.VarChar(40)
+  permanecia_no_cliente               Decimal?  @db.Decimal(10, 2)
+  free_time                           Decimal?  @db.Decimal(10, 2)
+  hora_excedente                      Decimal?  @db.Decimal(10, 2)
+  pernoite                            Decimal?  @db.Decimal(10, 2)
+  diaria                              Decimal?  @db.Decimal(10, 2)
+  saldo_estadia                       Decimal?  @db.Decimal(10, 2)
+  rs_h_estadia                        Decimal?  @db.Decimal(10, 2)
+  estadia_rs                          Decimal?  @db.Decimal(10, 2)
+  pernoite_rs                         Decimal?  @db.Decimal(10, 2)
+  diaria_rs                           Decimal?  @db.Decimal(10, 2)
+  estadia_pernoite                    Decimal?  @db.Decimal(10, 2)
+  cte                                 String?   @db.VarChar(40)
+  data_cobranca                       DateTime? @db.Date
+  status_cobranca                     String?   @db.VarChar(50)
+  causal                              String?   @db.VarChar(50)
+  justificativa                       String?   @db.Text
+  obs                                 String?   @db.Text
+  update_at                           DateTime? @default(now()) @db.DateTime(0)
+  usuario                             String?   @db.VarChar(50)
+}
+
+model sb_documentacao_estadia_recusadas_test {
+  id_sb_documentacao_estadia_recusada Int       @id @default(autoincrement())
+  mes                                 DateTime? @db.Date
+  tipo_documento                      String?   @db.VarChar(70)
+  numero_documento                    String?   @db.VarChar(70)
+  ctnr_cs                             String?   @db.VarChar(70)
+  referencia_do                       String?   @db.VarChar(70)
+  cliente_codigo_razao                String?   @db.VarChar(70)
+  grupo_cliente                       String?   @db.VarChar(70)
+  coleta                              String?   @db.VarChar(70)
+  coleta_endereco                     String?   @db.VarChar(70)
+  coleta_cidade                       String?   @db.VarChar(70)
+  entrega                             String?   @db.VarChar(70)
+  entrega_endereco                    String?   @db.VarChar(70)
+  entrega_cidade                      String?   @db.VarChar(70)
+  programacao_entrega                 DateTime? @db.DateTime(0)
+  documento_da_mercadoria             String?   @db.VarChar(70)
+  frota                               String?   @db.VarChar(10)
+  chegada_no_cliente                  DateTime? @db.DateTime(0)
+  saida_do_cliente                    DateTime? @db.DateTime(0)
+  status                              String?   @db.VarChar(40)
+  permanecia_no_cliente               DateTime? @db.Time(0)
+  free_time                           DateTime? @db.Time(0)
+  hora_excedente                      DateTime? @db.Time(0)
+  pernoite                            DateTime? @db.Time(0)
+  diaria                              DateTime? @db.Time(0)
+  saldo_estadia                       DateTime? @db.Time(0)
+  rs_h_estadia                        Decimal?  @db.Decimal(10, 2)
+  estadia_rs                          Decimal?  @db.Decimal(10, 2)
+  pernoite_rs                         Decimal?  @db.Decimal(10, 2)
+  diaria_rs                           Decimal?  @db.Decimal(10, 2)
+  estadia_pernoite                    Decimal?  @db.Decimal(10, 2)
+  cte                                 String?   @db.VarChar(40)
+  data_cobranca                       DateTime? @db.Date
+  status_cobranca                     String?   @db.VarChar(50)
+  causal                              String?   @db.VarChar(50)
+  justificativa                       String?   @db.Text
+  obs                                 String?   @db.Text
+  update_at                           DateTime? @default(now()) @db.DateTime(0)
+  usuario                             String?   @db.VarChar(50)
+}
+
+model sb_documentacao_faturamento_pendente {
+  id_sb_documentacao_faturamento_pendente Int       @id @default(autoincrement())
+  cliente                                 String?   @db.VarChar(70)
+  gropo_cliente                           String?   @db.VarChar(50)
+  st                                      String?   @db.VarChar(50)
+  modal                                   String?   @db.VarChar(50)
+  cte_minuta                              String?   @db.VarChar(50)
+  emissao_cte                             DateTime? @db.DateTime(0)
+  agendamento                             DateTime? @db.DateTime(0)
+  competencia                             Int?
+  valores_sem_icms                        Decimal?  @db.Decimal(20, 3)
+  valores_com_icms                        Decimal?  @db.Decimal(20, 3)
+  diferenca_dias                          Int?
+  status                                  String?   @db.VarChar(70)
+  regras_de_faturamento                   String?   @db.VarChar(255)
+  obs                                     String?   @db.Text
+  periodo                                 String?   @db.VarChar(70)
+  responsabilidade                        String?   @db.VarChar(70)
+  update_at                               DateTime? @default(now()) @db.DateTime(0)
+  usuario                                 String?   @db.VarChar(50)
+}
+
+model sb_documentacao_nc_emissao_fiscal {
+  id_sb_documentacao_nc_emissao_fiscal Int       @id @default(autoincrement())
+  mes                                  DateTime? @db.Date
+  cliente                              String?   @db.VarChar(50)
+  documentos_emitidos                  Int?
+  processos_anulacao_complementar      Int?
+  valor_incorreto                      Decimal?  @db.Decimal(15, 2)
+  valor_modificado                     Decimal?  @db.Decimal(15, 2)
+  impacto_financeiro_valor             Decimal?  @db.Decimal(15, 2)
+  impacto_volumetria_porc              Decimal?  @db.Decimal(10, 6)
+  impacto_financeiro_porc              Decimal?  @db.Decimal(10, 6)
+  causal                               String?   @db.VarChar(50)
+  detalhamento                         String?   @db.Text
+  update_at                            DateTime? @default(now()) @db.DateTime(0)
+}
+
+model sb_financeiro_matricial {
+  id_sb_financeiro_matricial Int       @id @default(autoincrement())
+  grupo                      String?   @db.VarChar(100)
+  classe_custo               String?   @db.VarChar(100)
+  objeto_emissor             String?   @db.VarChar(100)
+  filial                     String?   @db.VarChar(100)
+  classe_custo_n1            String?   @db.VarChar(100)
+  classe_custo_n2            String?   @db.VarChar(100)
+  orcado                     Decimal?  @db.Decimal(10, 3)
+  realizado                  Decimal?  @db.Decimal(10, 3)
+  variacao                   Decimal?  @db.Decimal(10, 3)
+  variacao_porcentagem       Decimal?  @db.Decimal(5, 2)
+  competencia_data           DateTime? @db.Date
+  justificativa              String?   @db.Text
+  responsavel_atualizacao    String?   @db.VarChar(80)
+  data_hora_atualizacao      DateTime? @default(now()) @db.DateTime(0)
+}
+
+model sb_grandes_contas {
+  id_sb_indicadores_rodovi_rios Int       @id @default(autoincrement()) @map("id_sb_indicadores_rodoviários")
+  data                          DateTime? @db.Date
+  cliente                       String?   @db.VarChar(50)
+  programado                    Decimal?  @db.Decimal(10, 0)
+  realizado                     Decimal?  @db.Decimal(10, 0)
+  nao_realizado                 Decimal?  @db.Decimal(10, 0)
+  observacao                    String?   @db.VarChar(100)
+  ultima_atualizacao            DateTime? @db.DateTime(0)
+  usuario                       String?   @db.VarChar(50)
+}
+
+model sb_indicadores_rodoviarios {
+  id_sb_indicadores_rodoviarios Int       @id @default(autoincrement())
+  data                          DateTime? @db.Date
+  meta                          Decimal?  @db.Decimal(10, 0)
+  programado                    Decimal?  @db.Decimal(10, 0)
+  realizado                     Decimal?  @db.Decimal(10, 0)
+  nao_realizado                 Decimal?  @db.Decimal(10, 0)
+  observacao                    String?   @db.VarChar(100)
+  ultima_atualizacao            DateTime? @db.DateTime(0)
+  usuario                       String?   @db.VarChar(50)
+}
+
+model sb_metas {
+  id_sb_metas           Int               @id @default(autoincrement())
+  indicador_entregavel  String?           @db.VarChar(150)
+  finalidade            String?           @db.MediumText
+  valor_inicial         Int?
+  valor_final           Int?
+  medido_por            String?           @db.VarChar(30)
+  peso                  Decimal?          @db.Decimal(10, 2)
+  setor                 String?           @db.VarChar(120)
+  porcentagem_ponderada Decimal?          @db.Decimal(10, 2)
+  data_hora_atualizacao DateTime?         @db.DateTime(0)
+  usuario_responsavel   String?           @db.VarChar(30)
+  status_metas          String?           @db.VarChar(30)
+  data_inicio           DateTime?         @db.Date
+  data_fim              DateTime?         @db.Date
+  data_meta_alcancada   DateTime?         @db.Date
+  sb_metas_mensal       sb_metas_mensal[]
+  sb_metas_regua        sb_metas_regua[]
+}
+
+model sb_metas_cadastro_setor {
+  id_sb_metas_cadastro_setor Int     @id @default(autoincrement())
+  setor                      String? @db.VarChar(120)
+}
+
+model sb_metas_mensal {
+  id_sb_metas_mensal Int       @id @default(autoincrement())
+  id_sb_metas        Int?
+  mes                DateTime? @db.Date
+  semana             DateTime? @db.Date
+  n_semana           Int?
+  porcentagem        Int?
+  observacao         String?   @db.Text
+  sb_metas           sb_metas? @relation(fields: [id_sb_metas], references: [id_sb_metas])
+
+  @@index([id_sb_metas], name: "FK_sb_metas_mensal_sb_metas")
+}
+
+model sb_metas_regua {
+  id_sb_metas_regua Int       @id @default(autoincrement())
+  id_sb_metas       Int?
+  porcentagem_de    Int?
+  porcentagem_ate   Int?
+  descricao         String?   @db.Text
+  und               String?   @db.VarChar(10)
+  desc              Float?
+  obs               String?   @db.Text
+  sb_metas          sb_metas? @relation(fields: [id_sb_metas], references: [id_sb_metas])
+
+  @@index([id_sb_metas], name: "FK_sb_metas_regua_sb_metas")
+}
+
+model sb_multas {
+  id_sb_multas                        Int       @id @default(autoincrement())
+  placa                               String?   @db.VarChar(10)
+  frota                               String?   @db.VarChar(15)
+  centro_custo                        String?   @db.VarChar(15)
+  ait                                 String?   @db.VarChar(15)
+  data_infracao                       DateTime? @db.Date
+  data_recebimento_notificacao        DateTime? @db.Date
+  condutor                            String?   @db.VarChar(40)
+  data_envio_setor_responsavel        DateTime? @db.Date
+  data_final_receber_area_responsavel DateTime? @db.Date
+  data_retorno_area_responsavel       DateTime? @db.Date
+  data_prazo_indicacao                DateTime? @db.Date
+  indicado_em                         String?   @db.VarChar(50)
+  responsabilidade                    String?   @db.VarChar(80)
+  encaminhado_recurso                 DateTime? @db.Date
+  resposta_recurso                    String?   @db.VarChar(80)
+  codigo_desdor                       Int?
+  descricao_infracao                  String?   @db.Text
+  valor                               Decimal?  @db.Decimal(20, 2)
+  periodo_lancamento_indicadores      String?   @db.VarChar(30)
+  sp                                  String?   @db.VarChar(50)
+  envio_contabilidade                 DateTime? @db.Date
+  envio_rh_documento_assinado         DateTime? @db.Date
+  multa_abonada                       String?   @db.Text
+  observacao                          String?   @db.Text
+  cash_back                           String?   @db.VarChar(5)
+  valor_cashback                      Decimal?  @db.Decimal(20, 2)
+  data_cashback                       DateTime? @db.Date
+  numero_ndeo                         String?   @db.VarChar(11)
+  condutor_ligacao                    String?   @db.VarChar(50)
+}
+
+model sb_multas_centro_custo {
+  id_sb_multas_centro_custo Int     @id @default(autoincrement())
+  codigo                    Int?
+  nome                      String? @db.VarChar(50)
+}
+
+model sb_multas_cod_infracao {
+  id_sb_multas_cod_infracao Int     @id @default(autoincrement())
+  codigo                    Int     @default(0)
+  infracao                  String  @db.Text
+  gravidade                 String  @default("0") @db.VarChar(50)
+  responsavel               String  @default("0") @db.VarChar(50)
+  pontos                    Int     @default(0)
+  valor_multa               Decimal @default(0.00) @db.Decimal(10, 2)
+  valor_multa_desconto      Decimal @default(0.00) @db.Decimal(10, 2)
+  orgao_autuador            String  @default("0") @db.VarChar(80)
+  artigos_ctb               String  @default("0") @db.VarChar(20)
+  valor_extenso             String  @default("0") @db.VarChar(255)
+}
+
+model sb_multas_copy {
+  id_sb_multas                        Int       @id @default(autoincrement())
+  placa                               String?   @db.VarChar(10)
+  frota                               String?   @db.VarChar(15)
+  centro_custo                        String?   @db.VarChar(15)
+  ait                                 String?   @db.VarChar(15)
+  data_infracao                       DateTime? @db.Date
+  data_recebimento_notificacao        DateTime? @db.Date
+  condutor                            String?   @db.VarChar(40)
+  data_envio_setor_responsavel        DateTime? @db.Date
+  data_final_receber_area_responsavel DateTime? @db.Date
+  data_retorno_area_responsavel       DateTime? @db.Date
+  data_prazo_indicacao                DateTime? @db.Date
+  indicado_em                         String?   @db.VarChar(50)
+  encaminhado_recurso                 DateTime? @db.Date
+  resposta_recurso                    String?   @db.VarChar(80)
+  codigo_desdor                       Int?
+  descricao_infracao                  String?   @db.Text
+  valor                               Decimal?  @db.Decimal(10, 2)
+  periodo_lancamento_indicadores      String?   @db.VarChar(30)
+  sp                                  String?   @db.VarChar(50)
+  envio_contabilidade                 DateTime? @db.Date
+  envio_rh_documento_assinado         DateTime? @db.Date
+  multa_abonada                       String?   @db.Text
+  observacao                          String?   @db.Text
+}
+
+model sb_multas_placas_frotas {
+  id_sb_multas_placas_frotas Int     @id @default(autoincrement())
+  placa                      String? @db.VarChar(10)
+  n_frota                    String? @db.VarChar(20)
+  renavam                    String? @db.VarChar(20)
+  cc                         Int?
+  centro_custo               String? @db.VarChar(255)
+}
+
+model sb_rodoviarios_extratos {
+  id_sb_rodoviarios_extratos Int       @id @default(autoincrement())
+  tipo_doc                   String?   @db.VarChar(10)
+  num_doc                    String?   @db.VarChar(15)
+  ctnr_cs                    String?   @db.VarChar(50)
+  cliente_cod_razao          String?   @db.VarChar(50)
+  coleta_cidade              String?   @db.VarChar(50)
+  entrega_cidade             String?   @db.VarChar(50)
+  entrega_uf                 String?   @db.VarChar(2)
+  programacao                String?   @db.VarChar(50)
+  agenda_cliente             String?   @db.VarChar(50)
+  frota                      String?   @db.VarChar(50)
+  inicio_viagem              String?   @db.VarChar(50)
+  chegada_cliente            String?   @db.VarChar(50)
+  saida_cliente              String?   @db.VarChar(50)
+  retorno_base               String?   @db.VarChar(50)
+  tempo_viagem               String?   @db.VarChar(50)
+  tempo_entrega              String?   @db.VarChar(50)
+  atualizado                 DateTime? @db.DateTime(0)
+}
+
+model sc_log {
+  id            Int       @id @default(autoincrement())
+  inserted_date DateTime? @db.DateTime(0)
+  username      String    @db.VarChar(90)
+  application   String    @db.VarChar(200)
+  creator       String    @db.VarChar(30)
+  ip_user       String    @db.VarChar(32)
+  action        String    @db.VarChar(30)
+  description   String?   @db.Text
+}
+
+model sec_apps {
+  app_name         String            @id @db.VarChar(128)
+  app_type         String?           @db.VarChar(255)
+  description      String?           @db.VarChar(255)
+  module           String?           @db.VarChar(255)
+  reference_module String?           @db.VarChar(255)
+  sec_groups_apps  sec_groups_apps[]
+}
+
+model sec_groups {
+  group_id         Int                @id @default(autoincrement())
+  description      String?            @unique @db.VarChar(255)
+  reference_module String?            @db.VarChar(255)
+  sec_groups_apps  sec_groups_apps[]
+  sec_users_groups sec_users_groups[]
+}
+
+model sec_groups_apps {
+  group_id         Int
+  app_name         String     @db.VarChar(128)
+  description      String     @db.VarChar(255)
+  priv_access      String?    @db.VarChar(1)
+  priv_insert      String?    @db.VarChar(1)
+  priv_delete      String?    @db.VarChar(1)
+  priv_update      String?    @db.VarChar(1)
+  priv_export      String?    @db.VarChar(1)
+  priv_print       String?    @db.VarChar(1)
+  module           String?    @db.VarChar(255)
+  reference_module String?    @db.VarChar(255)
+  sec_apps         sec_apps   @relation(fields: [app_name], references: [app_name])
+  sec_groups       sec_groups @relation(fields: [group_id], references: [group_id])
+
+  @@id([group_id, app_name])
+  @@index([app_name], name: "sec_groups_apps_ibfk_2")
+}
+
+model sec_modulos {
+  modulo String @id @db.VarChar(50)
+}
+
+model sec_registro_login {
+  id_sec_registro_login Int       @id @default(autoincrement())
+  login                 String?   @db.VarChar(50)
+  nome_usuario          String?   @db.VarChar(80)
+  aplicacao             String?   @db.VarChar(50)
+  data_hora_login       DateTime? @db.DateTime(0)
+}
+
+model sec_users {
+  login              String             @id @db.VarChar(255)
+  pswd               String             @db.VarChar(255)
+  name               String?            @db.VarChar(64)
+  funcao             String?            @db.VarChar(30)
+  email              String?            @db.VarChar(255)
+  active             String?            @db.VarChar(1)
+  activation_code    String?            @db.VarChar(32)
+  priv_admin         String?            @db.VarChar(1)
+  imagem             Bytes?             @db.Blob
+  arquivo            String?            @db.VarChar(100)
+  url                String?            @db.VarChar(100)
+  contato            String?            @db.VarChar(50)
+  use_terms          String?            @db.Char(3)
+  data_confirm_terms DateTime?          @db.DateTime(0)
+  sec_users_groups   sec_users_groups[]
+  users_groups       users_groups[]
+
+  @@index([login], name: "login")
+}
+
+model sec_users_groups {
+  login      String     @db.VarChar(255)
+  group_id   Int
+  sec_groups sec_groups @relation(fields: [group_id], references: [group_id])
+  sec_users  sec_users  @relation(fields: [login], references: [login])
+
+  @@id([login, group_id])
+  @@index([group_id], name: "sec_users_groups_ibfk_2")
+}
+
+model sla_transporte {
+  id_sla_transporte                Int     @id @default(autoincrement())
+  cliente                          String? @db.VarChar(100)
+  consultor_comercial              String? @db.VarChar(50)
+  atendimento_comercial            String? @db.VarChar(50)
+  quantidade_programacoes_diarias  Int?
+  quantidade_programacoes_semanais Int?
+  quantidade_programacoes_mensais  Int?
+  observacoes                      String? @db.VarChar(255)
+}
+
+model sla_transporte_2 {
+  id_sla_transporte                Int     @id @default(autoincrement())
+  cliente                          String? @db.VarChar(100)
+  consultor_comercial              String? @db.VarChar(50)
+  atendimento_comercial            String? @db.VarChar(50)
+  quantidade_programacoes_diarias  Int?
+  quantidade_programacoes_semanais Int?
+  quantidade_programacoes_mensais  Int?
+  observacoes                      String? @db.VarChar(255)
+}
+
+model telemetria_ativos {
+  id_telemetria_ativos   BigInt    @id @default(0)
+  id_telemetria_subgrupo BigInt?
+  fm_vehicle_id          Int?
+  placa                  String?   @db.VarChar(50)
+  frota                  String?   @db.VarChar(50)
+  teste                  Int?
+  ultima_viagem          DateTime? @db.DateTime(0)
+  update_at              DateTime? @default(now()) @db.DateTime(0)
+
+  @@index([id_telemetria_subgrupo], name: "id_telemetria_subgrupo")
+}
+
+model telemetria_centrocusto {
+  id_telemetria_centrocusto Int     @id @default(autoincrement())
+  frota                     String  @default("0") @db.Char(15)
+  placa                     String  @default("0") @db.Char(15)
+  fabricante                String  @default("0") @db.Char(15)
+  modelo                    String  @default("0") @db.Char(25)
+  cc                        String  @default("0") @db.Char(15)
+  media_combustivel         Decimal @default(0.00) @db.Decimal(10, 2)
+  descricao_cc              String  @default("0") @db.Char(25)
+  marca_modelo              String  @default("0") @db.Char(100)
+
+  @@index([frota], name: "frota")
+}
+
+model telemetria_eventos {
+  id_telemetria_eventos Int       @id @default(autoincrement())
+  data                  String?   @db.VarChar(20)
+  frota                 String?   @db.VarChar(20)
+  motorista             String?   @db.VarChar(100)
+  descricao_evento      String?   @db.VarChar(100)
+  duracao               Int?
+  valor                 Int?
+  km_h                  Int?
+  limite                Int?
+  data_viagem           String?   @db.VarChar(20)
+  ID                    Int?
+  data_time             DateTime? @db.DateTime(0)
+}
+
+model telemetria_eventos2 {
+  id_telemetria_eventos2      BigInt    @id @default(0)
+  id_telemetria_ativos        BigInt?
+  id_telemetria_motoristas    BigInt?
+  id_telemetria_eventos_tipo  BigInt?
+  duracao                     Int?
+  valor                       Int?
+  km_h                        Decimal?  @db.Decimal(10, 2)
+  limite                      Int?
+  data                        DateTime  @default(dbgenerated("('0000-00-00 00:00:00')")) @db.DateTime(0)
+  id_telemetria_viagem        BigInt?
+  lati                        Decimal?  @db.Decimal(10, 5)
+  long                        Decimal?  @db.Decimal(10, 5)
+  data_fim                    DateTime? @db.DateTime(0)
+  id_telemetria_localizacoes1 BigInt?
+  distancia                   Decimal?  @db.Decimal(10, 1)
+
+  @@index([data], name: "data")
+  @@index([id_telemetria_eventos2], name: "id_telemetria_eventos2")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model telemetria_eventos_ordem {
+  id_telemetria_eventos_ordem Int? @default(0)
+
+  @@ignore
+}
+
+model telemetria_eventos_teste {
+  id_telemetria_eventos2     BigInt    @id @default(0)
+  id_telemetria_ativos       BigInt?
+  id_telemetria_motoristas   BigInt?
+  id_telemetria_eventos_tipo BigInt?
+  duracao                    Int?
+  valor                      Int?
+  km_h                       Decimal?  @db.Decimal(10, 2)
+  limite                     Int?
+  data                       DateTime? @db.DateTime(0)
+  id_telemetria_viagem       BigInt?
+  lati                       Decimal?  @db.Decimal(10, 5)
+  long                       Decimal?  @db.Decimal(10, 5)
+  data_fim                   DateTime? @db.DateTime(0)
+}
+
+model telemetria_eventos_tipo {
+  id_telemetria_eventos_tipo BigInt @id @default(0)
+  descricao                  String @default("0") @db.VarChar(100)
+  tipo                       String @default("0") @db.VarChar(50)
+  valor                      String @default("0") @db.VarChar(50)
+  formato                    String @default("0") @db.VarChar(50)
+  unidade                    String @default("0") @db.VarChar(50)
+}
+
+model telemetria_localizacoes {
+  id_telemetria_localizacoes BigInt                  @id
+  id_grupo                   BigInt?
+  tipo_localizacao           String?                 @db.Char(50)
+  raio                       Int?
+  formato                    String?                 @db.Char(50)
+  cordenadas                 String?                 @db.VarChar(1024)
+  cordenadas2                Unsupported("geometry")
+  endereco                   String?                 @db.VarChar(512)
+  nome                       String?                 @db.VarChar(255)
+  update_at                  DateTime?               @default(now()) @db.DateTime(0)
+
+  @@index([id_telemetria_localizacoes, formato], name: "id_telemetria_localizacoes")
+  @@index([raio], name: "raio")
+}
+
+model telemetria_log {
+  id_telemetria_log Int       @id @default(autoincrement())
+  data              DateTime? @default(now()) @db.DateTime(0)
+  evento            String    @db.TinyText
+  tempo             Decimal   @default(0.0000) @db.Decimal(10, 4)
+  tempo_POST        Decimal   @default(0.0000) @db.Decimal(10, 4)
+  quantidade        Int       @default(0)
+}
+
+model telemetria_motoristas {
+  id_telemetria_motoristas BigInt  @id @default(0)
+  nome                     String? @db.TinyText
+  matricula                String? @db.VarChar(10)
+  id_telemetria_subgrupo   BigInt?
+  FmDriverId               Int?
+}
+
+model telemetria_posicionamentos {
+  id_telemetria_ativos          BigInt    @id @default(0)
+  id_telemetria_posicionamentos BigInt    @default(0)
+  id_telemetria_motoristas      BigInt?
+  longitude                     Decimal?  @db.Decimal(10, 5)
+  latitude                      Decimal?  @db.Decimal(10, 5)
+  disponivel                    Int?
+  velocidade                    Decimal?  @db.Decimal(10, 2)
+  direcao                       Int?
+  data                          DateTime? @db.DateTime(0)
+  solicitado_em                 DateTime? @default(now()) @db.DateTime(0)
+  id_telemetria_localizacoes    BigInt?
+  nome_lugar                    String?   @db.VarChar(100)
+}
+
+model telemetria_subgrupo {
+  id_telemetria_subgrupo BigInt @id
+  nome                   String @default("") @db.VarChar(50)
+  tipo                   String @default("") @db.VarChar(50)
+}
+
+model telemetria_subviagem {
+  id_telemetria_viagem        BigInt
+  id_telemetria_ativos        BigInt?
+  id_telemetria_motoristas    BigInt?
+  subtripstart                DateTime          @db.DateTime(0)
+  depart                      DateTime?         @db.DateTime(0)
+  tempo_dirigido              Int?
+  tempo_parado                Int?
+  combustivel_litros          Decimal?          @db.Decimal(10, 3)
+  distancia_km                Decimal?          @db.Decimal(10, 3)
+  quantidade                  Int?
+  inicio_lati                 Decimal?          @db.Decimal(10, 5)
+  inicio_long                 Decimal?          @db.Decimal(10, 5)
+  fim_lati                    Decimal?          @db.Decimal(10, 5)
+  fim_long                    Decimal?          @db.Decimal(10, 5)
+  inicio_end                  String?           @db.TinyText
+  fim_end                     String?           @db.TinyText
+  id_telemetria_localizacoes1 BigInt?
+  id_telemetria_localizacoes2 BigInt?
+  inicio_lugar                String?           @db.TinyText
+  fim_lugar                   String?           @db.TinyText
+  telemetria_viagem           telemetria_viagem @relation(fields: [id_telemetria_viagem], references: [id_telemetria_viagem])
+
+  @@id([id_telemetria_viagem, subtripstart])
+  @@index([depart], name: "depart")
+  @@index([id_telemetria_viagem, id_telemetria_ativos, id_telemetria_motoristas, subtripstart], name: "id_telemetria_viagem")
+}
+
+model telemetria_subviagem_resumo {
+  id_telemetria_viagem     BigInt            @default(0)
+  id_telemetria_ativos     BigInt            @default(0)
+  id_telemetria_motoristas BigInt            @default(0)
+  subtripstart             DateTime          @db.DateTime(0)
+  depart                   DateTime?         @db.DateTime(0)
+  tempo_dirigido           Int?
+  tempo_parado             Int?
+  combustivel_litros       Decimal?          @db.Decimal(10, 3)
+  distancia_km             Decimal?          @db.Decimal(10, 3)
+  quantidade               Int?
+  inicio_lati              Decimal?          @db.Decimal(10, 5)
+  inicio_long              Decimal?          @db.Decimal(10, 5)
+  fim_lati                 Decimal?          @db.Decimal(10, 5)
+  fim_long                 Decimal?          @db.Decimal(10, 5)
+  proxima_partida          DateTime?         @db.DateTime(0)
+  inicio_lugar             String?           @db.TinyText
+  fim_lugar                String?           @db.TinyText
+  segundos_no_local        Int?
+  chegada                  DateTime?         @db.DateTime(0)
+  telemetria_viagem        telemetria_viagem @relation(fields: [id_telemetria_viagem], references: [id_telemetria_viagem])
+
+  @@id([id_telemetria_viagem, subtripstart])
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model telemetria_teste_subviagem {
+  id_telemetria_viagem    BigInt                  @default(0)
+  id_telemetria_ativos    BigInt                  @default(0)
+  teste                   String?                 @db.VarChar(50)
+  telemetria_teste_viagem telemetria_teste_viagem @relation(fields: [id_telemetria_viagem], references: [id_telemetria_viagem])
+
+  @@index([id_telemetria_viagem], name: "FK_telemetria_teste_subviagem_telemetria_teste_viagem")
+  @@ignore
+}
+
+model telemetria_teste_viagem {
+  id_telemetria_viagem       BigInt                       @id @default(0)
+  id_telemetria_ativos       BigInt                       @default(0)
+  data_hora                  DateTime?                    @db.DateTime(0)
+  telemetria_teste_subviagem telemetria_teste_subviagem[] @ignore
+
+  @@index([data_hora], name: "data_hora")
+  @@index([id_telemetria_ativos], name: "id_telemetria_ativos")
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model telemetria_token {
+  token String?   @db.LongText
+  data  DateTime? @default(now()) @db.DateTime(0)
+
+  @@ignore
+}
+
+model telemetria_viagem {
+  id_telemetria_viagem        BigInt                        @id @default(0)
+  id_telemetria_ativos        BigInt?
+  id_telemetria_motoristas    BigInt?
+  inicio                      DateTime?                     @db.DateTime(0)
+  fim                         DateTime?                     @db.DateTime(0)
+  distancia                   Decimal?                      @db.Decimal(10, 3)
+  tempo_dirigido              Int?
+  combustivel                 Decimal?                      @db.Decimal(10, 3)
+  saida                       DateTime?                     @db.DateTime(0)
+  chegada                     DateTime?                     @db.DateTime(0)
+  telemetria_subviagem        telemetria_subviagem[]
+  telemetria_subviagem_resumo telemetria_subviagem_resumo[]
+
+  @@index([fim], name: "fim")
+  @@index([id_telemetria_ativos], name: "id_telemetria_ativos")
+  @@index([id_telemetria_motoristas], name: "id_telemetria_motoristas")
+  @@index([id_telemetria_viagem], name: "id_telemetria_viagem")
+  @@index([inicio], name: "inicio")
+}
+
+model trp_cheios {
+  id_trp_cheios           Int       @id @default(autoincrement())
+  nr_st_oa                String?   @db.VarChar(30)
+  operacao                String?   @db.VarChar(30)
+  modalidade              String?   @db.VarChar(10)
+  transportadora          String?   @db.VarChar(50)
+  data_entrega            DateTime? @db.Date
+  terminal                String?   @db.VarChar(50)
+  area                    String?   @db.VarChar(50)
+  margem                  String?   @db.VarChar(10)
+  local_passagem_portaria String?   @db.VarChar(30)
+  frete                   Decimal?  @db.Decimal(10, 2)
+  nr_ctr                  String?   @db.VarChar(30)
+  tipo_recurso            String?   @db.VarChar(30)
+  update_at               DateTime? @default(now()) @db.DateTime(0)
+}
+
+model trp_cheios_test {
+  id_trp_cheios           Int       @id @default(autoincrement())
+  nr_st_oa                String?   @db.VarChar(30)
+  operacao                String?   @db.VarChar(30)
+  modalidade              String?   @db.VarChar(10)
+  transportadora          String?   @db.VarChar(50)
+  data_entrega            DateTime? @db.Date
+  terminal                String?   @db.VarChar(50)
+  area                    String?   @db.VarChar(50)
+  margem                  String?   @db.VarChar(10)
+  local_passagem_portaria String?   @db.VarChar(30)
+  frete                   Decimal?  @db.Decimal(10, 2)
+  nr_ctr                  String?   @db.VarChar(30)
+  tipo_recurso            String?   @db.VarChar(30)
+  update_at               DateTime? @default(now()) @db.DateTime(0)
+}
+
+model trp_diario_de_bordo {
+  id_trp_diario_de_bordo Int      @id @default(autoincrement())
+  texto                  String   @db.Text
+  data                   DateTime @db.Date
+  relatorio              String   @default("") @db.VarChar(50)
+  update_at              DateTime @default(now()) @db.DateTime(0)
+}
+
+model trp_geral_previsao {
+  id_trp_geral_previsao Int       @id @default(autoincrement())
+  agenda                DateTime? @db.Date
+  tr_realizado          Int?
+  tr_previsao           Int?
+  tp_realizado_cheio    Int?
+  tp_previsao_cheio     Int?
+  tp_realizado_vazio    Int?
+  tp_previsao_vazio     Int?
+}
+
+model trp_geral_tp_orcado_planejado {
+  id_trp_geral_tp_orcado_planejado Int       @id @default(autoincrement())
+  data                             DateTime  @db.Date
+  operacao                         String?   @db.VarChar(20)
+  modalidade                       String?   @db.VarChar(20)
+  recurso                          String?   @db.VarChar(20)
+  vol_tecon                        Decimal?  @db.Decimal(20, 2)
+  vol_santos                       Decimal?  @db.Decimal(20, 2)
+  vol_guaruja                      Decimal?  @db.Decimal(20, 2)
+  vol_k10                          Decimal?  @db.Decimal(20, 2)
+  vol_novelis                      Decimal?  @db.Decimal(20, 2)
+  orc_tecon                        Decimal?  @db.Decimal(20, 2)
+  orc_santos                       Decimal?  @db.Decimal(20, 2)
+  orc_guaruja                      Decimal?  @db.Decimal(20, 2)
+  orc_k10                          Decimal?  @db.Decimal(20, 2)
+  orc_novelis                      Decimal?  @db.Decimal(20, 2)
+  update_at                        DateTime? @default(now()) @db.DateTime(0)
+}
+
+model trp_geral_tr_eo_macro {
+  id_trp_geral_tr_eo_macro      Int       @id @default(autoincrement())
+  agenda                        DateTime? @db.Date
+  frota_tr                      Int?
+  viagens_tr                    Int?
+  motoristas_tr_fds             Int?
+  motoristas_tr_apoio           Int?
+  motoristas_tr                 Int?
+  agregados_tr                  Int?
+  pj_tr                         Int?
+  frota_ctl                     Int?
+  total_viagens_cheio           Int?
+  total_viagens_vazio           Int?
+  viagens_tp_cheio              Int?
+  viagens_tp_vazio              Int?
+  saldo_cheio                   Int?
+  saldo_vazio                   Int?
+  agregados_tp_cheio            Int?
+  agregados_tp_vazio            Int?
+  visao_tp_cheio                Int?
+  visao_tp_vazio                Int?
+  transporte_tp_cheio           Int?
+  transporte_tp_vazio           Int?
+  motoristas_eo_cheio           Int?
+  motoristas_eo_vazio           Int?
+  viagens_cheio_eo              Int?
+  viagens_vazio_eo              Int?
+  jornada_descanso_tr           Int?
+  apoio_manut                   Int?
+  manobras                      Int?
+  banheira_clia                 Int?
+  qtd_motoristas_eo_cheio_vazio Int?
+  total_eo_em_operacao          Int?
+  ociosidade                    Int?
+  justificativa_ociosidade_tr   String?   @db.Text
+  justificativa_ociosidade_tp   String?   @db.Text
+  update_at                     DateTime? @default(now()) @db.DateTime(0)
+}
+
+model trp_geral_tr_mapa_clientes {
+  id_trp_geral_tr_mapa_clientes Int       @id @default(autoincrement())
+  agenda                        DateTime? @db.Date
+  cliente                       String?   @db.VarChar(100)
+  modalidade                    String?   @db.VarChar(10)
+  status                        String?   @db.VarChar(20)
+  update_at                     DateTime? @default(now()) @db.DateTime(0)
+}
+
+model trp_geral_tr_orcado_planejado {
+  id_trp_geral_tr_orcado_planejado Int       @id @default(autoincrement())
+  agenda                           DateTime? @db.Date
+  orc_viagens                      Int?
+  planejado_viagens                Int?
+  orc_receita                      Decimal?  @db.Decimal(20, 2)
+  forecast_receita                 Decimal?  @db.Decimal(20, 2)
+  planejado_pedagio                Decimal?  @db.Decimal(20, 2)
+  update_at                        DateTime? @default(now()) @db.DateTime(0)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model trp_ligacao {
+  operacao   String? @db.VarChar(30)
+  area       String? @db.VarChar(30)
+  modalidade String? @db.VarChar(30)
+  recurso    String? @db.VarChar(30)
+
+  @@ignore
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model trp_terminais_renomeado {
+  nome_original   String? @db.VarChar(100)
+  nome_modificado String? @db.VarChar(100)
+
+  @@ignore
+}
+
+model trp_vazios {
+  id_trp_vazios           Int       @id @default(autoincrement())
+  nr_st_oa                String?   @db.VarChar(30)
+  operacao                String?   @db.VarChar(10)
+  modalidade              String?   @db.VarChar(10)
+  transportadora          String?   @db.VarChar(50)
+  data_entrega            DateTime? @db.Date
+  terminal                String?   @db.VarChar(50)
+  tipo_recurso            String?   @db.VarChar(50)
+  area                    String?   @db.VarChar(50)
+  margem                  String?   @db.VarChar(10)
+  local_passagem_portaria String?   @db.VarChar(30)
+  frete                   Decimal?  @db.Decimal(10, 2)
+  nr_ctr                  String?   @db.VarChar(30)
+  update_at               DateTime? @default(now()) @db.DateTime(0)
+}
+
+model trp_vazios_test {
+  id_trp_vazios           Int       @id @default(autoincrement())
+  nr_st_oa                String?   @db.VarChar(30)
+  operacao                String?   @db.VarChar(10)
+  modalidade              String?   @db.VarChar(10)
+  transportadora          String?   @db.VarChar(50)
+  data_entrega            DateTime? @db.Date
+  terminal                String?   @db.VarChar(50)
+  tipo_recurso            String?   @db.VarChar(50)
+  area                    String?   @db.VarChar(50)
+  margem                  String?   @db.VarChar(10)
+  local_passagem_portaria String?   @db.VarChar(30)
+  frete                   Decimal?  @db.Decimal(10, 2)
+  nr_ctr                  String?   @db.VarChar(30)
+  update_at               DateTime? @default(now()) @db.DateTime(0)
+}
+
+model users_groups {
+  id        Int       @id @default(autoincrement())
+  user_id   String    @db.VarChar(255)
+  group_id  Int       @db.UnsignedInt
+  groups    groups    @relation(fields: [group_id], references: [id])
+  sec_users sec_users @relation(fields: [user_id], references: [login])
+
+  @@index([group_id], name: "users_groups_fk_1")
+  @@index([user_id], name: "users_groups_fk_2")
+}
+
+model vistoria_abas {
+  vistoria_abas Int     @id @default(autoincrement())
+  abas          String? @db.VarChar(50)
+}
+
+model vistoria_checklist_emergencial {
+  id_vistoria_checklist_emergencial           Int       @id @default(autoincrement())
+  id_vistoria_checklist_emergencial_principal Int?
+  item                                        String?   @db.Text
+  status_item                                 String?   @db.VarChar(50)
+  vencimento                                  DateTime? @db.DateTime(0)
+  observacao                                  String?   @db.Text
+}
+
+model vistoria_checklist_emergencial_principal {
+  id_vistoria_checklist_emergencial_principal Int       @id @default(autoincrement())
+  placa_frota                                 String?   @db.VarChar(50)
+  classificacao_frota                         String?   @db.VarChar(50)
+  data_checklist                              DateTime? @db.DateTime(0)
+}
+
+model vistoria_foto {
+  id_vistoria_foto                  Int     @id @default(autoincrement())
+  id_vistoria_principal             Int?
+  id_vistoria_itens_inspecao_cavalo Int?
+  foto                              Bytes?
+  arquivo                           String? @db.VarChar(100)
+  url                               String? @db.VarChar(100)
+}
+
+model vistoria_foto_semirreboque {
+  id_vistoria_foto_semirreboque           Int     @id @default(autoincrement())
+  id_vistoria_principal_semirreboque      Int?
+  id_vistoria_itens_inspecao_semirreboque Int?
+  foto                                    Bytes?
+  arquivo                                 String? @db.VarChar(100)
+  url                                     String? @db.VarChar(100)
+}
+
+model vistoria_itens_cadastro {
+  id_vistoria_itens_cadastro Int     @id @default(autoincrement())
+  classificacao_frota        String? @db.VarChar(50)
+  tipo_inspecao              String? @db.VarChar(50)
+  veiculo_inspecao           String? @db.VarChar(50)
+  itens_inspecao             String? @db.Text
+  impedimento                String? @db.VarChar(50)
+}
+
+model vistoria_itens_certificacao {
+  id_vistoria_itens_certificacao Int       @id @default(autoincrement())
+  id_vistoria_principal_cavalo   Int?
+  tipo_item                      String?   @db.VarChar(50)
+  item                           String?   @db.VarChar(50)
+  status_item                    String?   @db.VarChar(50)
+  vencimento                     DateTime? @db.Date
+  observacao                     String?   @db.Text
+}
+
+model vistoria_itens_inspecao_cavalo {
+  id_vistoria_itens_inspecao_cavalo Int     @id @default(autoincrement())
+  id_vistoria_principal_cavalo      Int?
+  tipo_item                         String? @db.VarChar(50)
+  item                              String? @db.Text
+  veiculo                           String? @db.VarChar(50)
+  status_item                       String? @db.VarChar(50)
+  observacao                        String? @db.VarChar(50)
+  tem_foto                          String? @db.VarChar(50)
+}
+
+model vistoria_itens_inspecao_semirreboque {
+  id_vistoria_itens_inspecao_semirreboque Int     @id @default(autoincrement())
+  id_vistoria_principal_semirreboque      Int?
+  tipo_item                               String? @db.VarChar(50)
+  item                                    String? @db.Text
+  veiculo                                 String? @db.VarChar(50)
+  status_item                             String? @db.VarChar(50)
+  observacao                              String? @db.VarChar(50)
+  tem_foto                                String? @db.VarChar(50)
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model vistoria_motorista_cadastro {
+  id_vistoria_motorista_cadastro Int?
+
+  @@ignore
+}
+
+model vistoria_observacoes_semirreboque {
+  id_vistoria_observacoes_semirreboque Int     @id @default(autoincrement())
+  id_vistoria_principal_semirreboque   Int?
+  observacao                           String? @db.Text
+}
+
+model vistoria_principal_cavalo {
+  id_vistoria_principal_cavalo Int       @id @default(autoincrement())
+  data_inicio_vistoria         DateTime? @db.DateTime(0)
+  data_fim_vistoria            DateTime? @db.DateTime(0)
+  tipo_frota                   String?   @db.VarChar(50)
+  situacao_frota               String    @default("0") @db.VarChar(50)
+  nome_motorista               String    @default("0") @db.VarChar(50)
+  marca_frota                  String    @default("0") @db.VarChar(50)
+  modelo_frota                 String?   @db.VarChar(50)
+  placa_frota                  String    @default("0") @db.VarChar(50)
+  ano_frota                    String    @default("0") @db.VarChar(50)
+  chassi_frota                 String    @default("0") @db.VarChar(50)
+  numero_frota                 String    @default("0") @db.VarChar(50)
+  caracteristica_frota         String?   @db.VarChar(50)
+  assinatura                   Bytes?
+  nome_assinatura              String?   @db.VarChar(50)
+  arquivo                      String?   @db.VarChar(50)
+  url                          String?   @db.VarChar(100)
+  nome_assinatura_motorista    String?   @db.VarChar(50)
+  assinatura_motorista         Bytes?
+  parecer_vistoriador          String?   @db.VarChar(150)
+  km                           Decimal?  @db.Decimal(20, 2)
+  tipo_vistoria                String?   @db.VarChar(50)
+  assinatura_gestor            Bytes?
+}
+
+model vistoria_principal_cavalo_sulco_pneu {
+  id_vistoria_principal_cavalo_sulco_pneu Int     @id @default(autoincrement())
+  id_vistoria_principal_cavalo            Int?
+  id_posicao                              String? @db.VarChar(50)
+  posicao                                 String? @db.VarChar(50)
+  milimetro                               String? @db.VarChar(50)
+}
+
+model vistoria_principal_semirreboque {
+  id_vistoria_principal_semirreboque Int       @id @default(autoincrement())
+  data_inicio_vistoria               DateTime? @db.DateTime(0)
+  data_fim_vistoria                  DateTime? @db.DateTime(0)
+  proprietario                       String?   @db.VarChar(50)
+  motorista                          String?   @db.VarChar(50)
+  rg                                 String?   @db.VarChar(50)
+  cnh                                String?   @db.VarChar(50)
+  vencimento                         DateTime? @db.Date
+  situacao_frota                     String?   @db.VarChar(50)
+  placa_veiculo                      String?   @db.VarChar(50)
+  marca_veiculo                      String?   @db.VarChar(50)
+  tipo_veiculo                       String?   @db.VarChar(50)
+  ano_veiculo                        String?   @db.VarChar(50)
+  chassi_veiculo                     String?   @db.VarChar(50)
+  qtd_eixos                          String?   @db.VarChar(50)
+  modelo_veiculo                     String?   @db.VarChar(50)
+  nome_assinatura                    String?   @db.VarChar(50)
+  assinatura                         Bytes?
+  nome_assinatura_motorista          String?   @db.VarChar(50)
+  assinatura_motorista               Bytes?
+  nome_assinatura_solicitante        String?   @db.VarChar(50)
+  assinatura_solicitante             Bytes?
+  nome_assinatura_manutencao         String?   @db.VarChar(50)
+  assinatura_manutencao              Bytes?
+  parecer_vistoriador                String?   @db.VarChar(50)
+  tipo_vistoria                      String?   @db.VarChar(50)
+  assinatura_gestor                  Bytes?
+  numero_frota                       String?   @db.VarChar(50)
+}
+
+model vistoria_principal_semirreboque_sulco_pneu {
+  id_vistoria_principal_semirreboque_sulco_pneu Int     @id @default(autoincrement())
+  id_vistoria_principal_semirreboque            Int?
+  id_posicao                                    String? @db.VarChar(50)
+  posicao                                       String? @db.VarChar(50)
+  milimetro                                     Int?
+  modelo                                        String? @db.VarChar(50)
+}
+
+model wpp {
+  id_wpp         Int       @id @default(autoincrement())
+  telefone       String?   @db.VarChar(50)
+  telefone_para  String?   @db.VarChar(50)
+  telefone_autor String?   @db.VarChar(50)
+  texto          String?   @db.TinyText
+  nivel          Int?      @default(1)
+  opcao_anterior Int?      @default(1)
+  comando        String?   @db.VarChar(50)
+  insert_at      DateTime? @default(now()) @db.DateTime(0)
+}
+
+model wpp_msgs_padroes {
+  id_wpp_msgs_padroes Int     @id @default(autoincrement())
+  telefone            String? @db.VarChar(50)
+  telefone_para       String? @db.VarChar(50)
+  texto_recebido      String? @db.VarChar(50)
+  texto_enviar        String? @db.TinyText
+  opcao               Int?
+  opcao_anterior      Int?
+  nivel               Int?    @default(1)
+  projeto             String? @default("todos") @db.VarChar(50)
+  chamar_url          String? @default("Não") @db.VarChar(3)
+  url                 String? @db.VarChar(255)
+  resposta_da_opcao   String? @db.VarChar(255)
+}
+
+model wpp_telefones_bm {
+  telefone String  @id @db.VarChar(50)
+  nome     String? @db.VarChar(50)
+  projeto  String? @db.VarChar(50)
+}
