@@ -80,7 +80,7 @@ export async function getServerSideProps ({ req }) {
   if (cookie.includes('next-token') || cookie.includes('next-refresh-token') || cookie.includes('next-remember-me-token')) {
     return {
       redirect: {
-        destination: '/documentacao'
+        destination: '/navios'
       }
     }
   } else {

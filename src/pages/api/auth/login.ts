@@ -26,20 +26,20 @@ async function handler (req: NextApiRequest, res: NextApiResponse): Promise<unkn
 
   if (!isPasswordCorret) return res.status(400).send('Senha incorreta')
 
-  const hasDefaultGroup = await prisma.users_groups.findFirst({
-    where: {
-      groups: {
-        modules: {
-          name: 'main'
-        }
-      },
-      AND: {
-        user_id: login
-      }
-    }
-  })
-  await prisma.$disconnect()
-  if (!hasDefaultGroup) return res.status(403).send('Usuário está inativo')
+  // const hasDefaultGroup = await prisma.users_groups.findFirst({
+  //   where: {
+  //     groups: {
+  //       modules: {
+  //         name: 'main'
+  //       }
+  //     },
+  //     AND: {
+  //       user_id: login
+  //     }
+  //   }
+  // })
+  // await prisma.$disconnect()
+  // if (!hasDefaultGroup) return res.status(403).send('Usuário está inativo')
 
   const formattedUser = {
     name: storageUser.name || '',

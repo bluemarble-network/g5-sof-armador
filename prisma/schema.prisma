@@ -96,11 +96,24 @@ model EmbarqueSOF {
   Email                        String?                 @db.Text
   horas_operacionais           Decimal?                @db.Decimal(10, 2)
   meta_prancha                 Int?
+  qtd_ternos                   Int?
+  status_embarque              String?                 @db.VarChar(50)
+  armador                      String?                 @db.VarChar(50)
   EmbarqueSOF_Cabecalho        EmbarqueSOF_Cabecalho[]
   EmbarqueSOF_StowPlan         EmbarqueSOF_StowPlan[]
+  Navio_Sof_Armador            Navio_Sof_Armador[]
 
   @@index([SOF_Number], name: "SOF_Number")
   @@index([VOY], name: "VOY")
+}
+
+model Navio_Sof_Armador {
+  Id          Int         @id @default(autoincrement())
+  arquivo     String      @db.LongText
+  Navio_Id    Int
+  EmbarqueSOF EmbarqueSOF @relation(fields: [Navio_Id], references: [Id])
+
+  @@index([Navio_Id], name: "Navio_Id")
 }
 
 model EmbarqueSOF_Arquivos {
@@ -172,6 +185,7 @@ model EmbarqueSOF_Ships_Particular {
   Especialty     String?  @db.VarChar(35)
   Type1          String?  @db.VarChar(10)
   Crane          String?  @db.VarChar(30)
+  armador        String?  @db.VarChar(50)
 }
 
 model EmbarqueSOF_StowPlan {
@@ -3305,23 +3319,22 @@ model users {
 }
 
 model users_groups {
-  id             Int            @id @default(autoincrement())
-  user_id        String         @db.VarChar(180)
-  group_id       Int            @db.UnsignedInt
-  groups         groups         @relation(fields: [group_id], references: [id])
+  id       Int    @id @default(autoincrement())
+  user_id  String @db.VarChar(180)
+  group_id Int    @db.UnsignedInt
+  groups   groups @relation(fields: [group_id], references: [id])
 
   @@index([group_id], name: "users_groups_fk_1")
   @@index([user_id], name: "users_groups_fk_2")
 }
 
 model users_suzanog5 {
-  id                Int                 @db.UnsignedInt
+  id                Int?                @db.UnsignedInt
   name              String?             @db.VarChar(180)
   login             String              @id @default("1") @db.VarChar(180)
   password          String?             @db.VarChar(180)
-
+  armador           String?             @db.VarChar(50)
   remember_me_token remember_me_token[]
-
 }
 
 model webflow_cadastro_email_contato {
