@@ -1,9 +1,20 @@
-import { Box, Checkbox, CssBaseline, IconButton, Tooltip, Typography } from '@material-ui/core'
+import {
+  Box,
+  Checkbox,
+  CssBaseline,
+  IconButton,
+  Tooltip,
+  Typography
+} from '@material-ui/core'
 import { Form } from '@unform/web'
 import Head from 'next/head'
 import { useContext, useEffect, useRef, useState } from 'react'
 import { MdDelete, MdEdit, MdPeople } from 'react-icons/md'
-import { DefaultButton, GridButton, LargeButton } from '../../../components/_button'
+import {
+  DefaultButton,
+  GridButton,
+  LargeButton
+} from '../../../components/_button'
 import { Dialog } from '../../../components/_dialog'
 import { Input } from '../../../components/_form'
 import { filterData, Grid, IFilter } from '../../../components/_grid'
@@ -36,7 +47,7 @@ const columTitles = [
   { name: 'group.name', label: 'Grupo' }
 ]
 
-function Users () {
+function Users() {
   const [data, setData] = useState<IDados[]>([])
   const [filteredData, setFilteredData] = useState<IDados[]>([])
   const [selectedFilters, setSelectedFilters] = useState<IFilter[]>([])
@@ -49,21 +60,27 @@ function Users () {
   const [itensSelecionados, setItensSelecionados] = useState<IDados[]>([])
   const { createAlert } = useContext(AlertContext)
 
-  function handleEditGroups (item: any) {
+  function handleEditGroups(item: any) {
     setItensSelecionados([item])
     setModal('group')
   }
 
   const handleOpenModalEditar = () => {
-    if (itensSelecionados.length >= 2) return createAlert('Só é possível editar um item por vez', 'warning')
+    if (itensSelecionados.length >= 2) {
+      return createAlert('Só é possível editar um item por vez', 'warning')
+    }
     setModal('update')
   }
 
   const handleSelectItem = (item: IDados) => {
-    const itemJaExiste = itensSelecionados.find(itemSelecionado => itemSelecionado.login === item.login)
+    const itemJaExiste = itensSelecionados.find(
+      (itemSelecionado) => itemSelecionado.login === item.login
+    )
 
     if (itemJaExiste) {
-      const novoArray = itensSelecionados.filter(sub => sub.login !== itemJaExiste.login)
+      const novoArray = itensSelecionados.filter(
+        (sub) => sub.login !== itemJaExiste.login
+      )
       return setItensSelecionados(novoArray)
     }
 
@@ -73,7 +90,7 @@ function Users () {
   const handleDeleteItems = async () => {
     setLoadingAction(true)
     try {
-      const ids = itensSelecionados.map(item => item.login)
+      const ids = itensSelecionados.map((item) => item.login)
       await api.delete(`/users?login=${ids.join(',')}`)
       await getDados()
       createAlert('Item deletado com sucesso!', 'success')
@@ -86,10 +103,10 @@ function Users () {
     }
   }
 
-  async function getDados () {
+  async function getDados() {
     setLoading(true)
     try {
-      const { data }: { data: any[]} = await api.get('/users')
+      const { data }: { data: any[] } = await api.get('/users')
       setFilteredData(data)
       defaultData.current = data
       setData(data.slice(0, 6))
@@ -101,7 +118,9 @@ function Users () {
   }
 
   const isSelected = (item: IDados) => {
-    return itensSelecionados.some(itemSelecionado => itemSelecionado.login === item.login)
+    return itensSelecionados.some(
+      (itemSelecionado) => itemSelecionado.login === item.login
+    )
   }
 
   const updateFilters = () => {
@@ -115,79 +134,100 @@ function Users () {
   }, [])
 
   return (
-        <Box sx={{ py: 8 }}>
-          <Head>
-            <title>Usuários</title>
-          </Head>
-        <CssBaseline/>
-           <Box
-             sx={{
-               width: 'calc(100vw - 8px * 10)',
-               margin: 'auto'
-             }}
-           >
-               <Header title='Usuários'>
-                   <GridButton color="success" type="insert" onClick={() => setModal('insert')} />
-               </Header>
-               <Grid
-                  customButtons={<ActionButtons handleOpenModalEditar={handleOpenModalEditar} items={itensSelecionados} setModal={setModal} />}
-                  columTitles={columTitles}
-                  defaultData={filteredData}
-                  selectedFilters={selectedFilters}
-                  setSelectedFilters={setSelectedFilters}
-                  tableData={filteredData}
-                  setTableData={setData}
-                  updateFilters={updateFilters}
-                  isLoading={loading}
-               >
-                   {
-                       data.map((item, index) => {
-                         return (
-                          <Tr
-                              sx={{
-                                backgroundColor: isSelected(item) ? '#00aa4a3d!important' : 'inherit',
-                                ':hover': {
-                                  backgroundColor: isSelected(item) ? '#00aa4a3d!important' : 'inherit'
-                                }
-                              }}
-                              key={index}
-                            >
-                                   <Td sx={{ position: 'relative', overflow: 'hidden' }}>
-                                      <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
-                                        <Checkbox checked={isSelected(item)} onChange={() => handleSelectItem(item)} size="small" />
-                                        <Typography variant="body2">{item.name}</Typography>
-                                      </Box>
-                                    </Td>
-                                   <Td sx={{ width: 50 }}>
-                                       <IconButton onClick={() => handleEditGroups(item)} >
-                                           <MdPeople size={20} />
-                                       </IconButton>
-                                   </Td>
-                               </Tr>
-                         )
-                       })
-                   }
-               </Grid>
-            </Box>
-            <Dialog
-                loading={loadingAction}
-                open={modal === 'delete'}
-                title="Atenção"
-                body={`Tem certeza que quer deletar o usuário ${itensSelecionados[0]?.name}?`}
-                options={[
-                  { label: 'Apagar', focus: true, cb: () => handleDeleteItems() },
-                  { label: 'Manter', focus: false, cb: () => setModal('') }
-                ]} />
-            <Modal open={modal === 'insert'} onClose={() => setModal('')}>
-                <FormInsert fecharModal={() => setModal('')} atualizar={getDados} />
-            </Modal>
-            <Modal open={modal === 'update'} onClose={() => setModal('')}>
-              <FormEdit itemSelecionado={itensSelecionados[0]} fecharModal={() => setModal('')} atualizar={getDados} />
-            </Modal>
-            <Modal open={modal === 'group'} onClose={() => setModal('')}>
-              <Groups ItemSelecionado={itensSelecionados[0]} />
-            </Modal>
-        </Box>
+    <Box sx={{ py: 8 }}>
+      <Head>
+        <title>Usuários</title>
+      </Head>
+      <CssBaseline />
+      <Box
+        sx={{
+          width: 'calc(100vw - 8px * 10)',
+          margin: 'auto'
+        }}
+      >
+        <Header title='Usuários'>
+          <GridButton
+            color='success'
+            type='insert'
+            onClick={() => setModal('insert')}
+          />
+        </Header>
+        <Grid
+          customButtons={
+            <ActionButtons
+              handleOpenModalEditar={handleOpenModalEditar}
+              items={itensSelecionados}
+              setModal={setModal}
+            />
+          }
+          columTitles={columTitles}
+          defaultData={filteredData}
+          selectedFilters={selectedFilters}
+          setSelectedFilters={setSelectedFilters}
+          tableData={filteredData}
+          setTableData={setData}
+          updateFilters={updateFilters}
+          isLoading={loading}
+        >
+          {data.map((item, index) => {
+            return (
+              <Tr
+                sx={{
+                  backgroundColor: isSelected(item)
+                    ? '#00aa4a3d!important'
+                    : 'inherit',
+                  ':hover': {
+                    backgroundColor: isSelected(item)
+                      ? '#00aa4a3d!important'
+                      : 'inherit'
+                  }
+                }}
+                key={index}
+              >
+                <Td sx={{ position: 'relative', overflow: 'hidden' }}>
+                  <Box sx={{ display: 'flex', gap: 1, alignItems: 'center' }}>
+                    <Checkbox
+                      checked={isSelected(item)}
+                      onChange={() => handleSelectItem(item)}
+                      size='small'
+                    />
+                    <Typography variant='body2'>{item.name}</Typography>
+                  </Box>
+                </Td>
+                <Td sx={{ width: 50 }}>
+                  <IconButton onClick={() => handleEditGroups(item)}>
+                    <MdPeople size={20} />
+                  </IconButton>
+                </Td>
+              </Tr>
+            )
+          })}
+        </Grid>
+      </Box>
+      <Dialog
+        loading={loadingAction}
+        open={modal === 'delete'}
+        title='Atenção'
+        body={`Tem certeza que quer deletar o usuário ${itensSelecionados[0]?.name}?`}
+        options={[
+          { label: 'Apagar', focus: true, cb: () => handleDeleteItems() },
+          { label: 'Manter', focus: false, cb: () => setModal('') }
+        ]}
+      />
+      <Modal open={modal === 'insert'} onClose={() => setModal('')}>
+        <FormInsert fecharModal={() => setModal('')} atualizar={getDados} />
+      </Modal>
+      <Modal open={modal === 'update'} onClose={() => setModal('')}>
+        <FormEdit
+          itemSelecionado={itensSelecionados[0]}
+          fecharModal={() => setModal('')}
+          atualizar={getDados}
+        />
+      </Modal>
+      <Modal open={modal === 'group'} onClose={() => setModal('')}>
+        <Groups ItemSelecionado={itensSelecionados[0]} />
+      </Modal>
+    </Box>
   )
 }
 
@@ -200,11 +240,11 @@ interface IFormInsert {
   atualizar(): void
 }
 
-function FormInsert ({ fecharModal, atualizar }: IFormInsert) {
+function FormInsert({ fecharModal, atualizar }: IFormInsert) {
   const { createAlert } = useContext(AlertContext)
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit (campos) {
+  async function handleSubmit(campos) {
     try {
       setLoading(true)
       await api.post('/users', campos)
@@ -218,17 +258,19 @@ function FormInsert ({ fecharModal, atualizar }: IFormInsert) {
   }
 
   return (
-        <Box sx={{ paddingX: 2, paddingY: 4 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold' }} >Novo usuário</Typography>
-            <Form onSubmit={handleSubmit}>
-                <Input name="name" type="text" label="Nome" />
-                <Input name="login" type="text" label="Login" />
-                <Input name="pswd" type="password" label="Senha" />
-                <Box sx={{ width: '100%', marginTop: 2 }}>
-                    <LargeButton type="submit" loading={loading} title="Inserir" />
-                </Box>
-            </Form>
+    <Box sx={{ paddingX: 2, paddingY: 4 }}>
+      <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
+        Novo usuário
+      </Typography>
+      <Form onSubmit={handleSubmit}>
+        <Input name='name' type='text' label='Nome' />
+        <Input name='login' type='text' label='Login' />
+        <Input name='password' type='password' label='Senha' />
+        <Box sx={{ width: '100%', marginTop: 2 }}>
+          <LargeButton type='submit' loading={loading} title='Inserir' />
         </Box>
+      </Form>
+    </Box>
   )
 }
 
@@ -236,17 +278,21 @@ interface IGrupos {
   ItemSelecionado: IDados
 }
 
-function Groups ({ ItemSelecionado }: IGrupos) {
+function Groups({ ItemSelecionado }: IGrupos) {
   const [loading, setLoading] = useState(false)
-  const [leftList, setLeftList] = useState<any[]>([{ id: 1, name: 'Carregando' }])
-  const [rightList, setRightList] = useState<any[]>([{ id: 1, name: 'Carregando' }])
+  const [leftList, setLeftList] = useState<any[]>([
+    { id: 1, name: 'Carregando' }
+  ])
+  const [rightList, setRightList] = useState<any[]>([
+    { id: 1, name: 'Carregando' }
+  ])
   const { createAlert } = useContext(AlertContext)
 
-  async function handleSubmit () {
+  async function handleSubmit() {
     setLoading(true)
     try {
-      const add = rightList.map(item => item.id)
-      const remove = leftList.map(item => item.id)
+      const add = rightList.map((item) => item.id)
+      const remove = leftList.map((item) => item.id)
       await api.put(`/groups?user_id=${ItemSelecionado.login}`, { add, remove })
       createAlert('Grupo atualizado com sucesso!', 'success')
       setLoading(false)
@@ -257,15 +303,21 @@ function Groups ({ ItemSelecionado }: IGrupos) {
   }
 
   useEffect(() => {
-    (async function () {
+    ;(async function () {
       try {
         setLoading(true)
         const { data: groups }: { data: any[] } = await api.get('/groups')
-        const { data: user }: { data: any } = await api.get(`/users?login=${ItemSelecionado.login}`)
-        const selectedGroups = user.users_groups.map(item => item.groups)
+        const { data: user }: { data: any } = await api.get(
+          `/users?login=${ItemSelecionado.login}`
+        )
+        const selectedGroups = user
+          ? user.users_groups.map((item) => item.groups)
+          : []
         setRightList(selectedGroups)
-        const selectedGroupsNames = selectedGroups.map(item => item.name)
-        const nonSelected = groups.filter(item => (!selectedGroupsNames.includes(item.name)))
+        const selectedGroupsNames = selectedGroups.map((item) => item.name)
+        const nonSelected = groups.filter(
+          (item) => !selectedGroupsNames.includes(item.name)
+        )
         setLeftList(nonSelected)
         setLoading(false)
       } catch (error) {
@@ -276,25 +328,42 @@ function Groups ({ ItemSelecionado }: IGrupos) {
   }, [])
 
   return (
-        <Box sx={{ paddingX: 2, paddingTop: 4, maxWidth: 550 }}>
-            <Typography variant="h6" fontWeight="bold" >Grupos de {ItemSelecionado.name}  </Typography>
-            <TransferList leftList={leftList} rightList={rightList} setRightList={setRightList} setLeftList={setLeftList} getLabel={(item: IDados) => item.name} />
-            <Box sx={{ display: 'flex', justifyContent: 'flex-end', marginTop: 2, marginBottom: 3 }}>
-                <DefaultButton loading={loading} onClick={handleSubmit}>Salvar alterações</DefaultButton>
-            </Box>
-        </Box>
+    <Box sx={{ paddingX: 2, paddingTop: 4, maxWidth: 550 }}>
+      <Typography variant='h6' fontWeight='bold'>
+        Grupos de {ItemSelecionado.name}{' '}
+      </Typography>
+      <TransferList
+        leftList={leftList}
+        rightList={rightList}
+        setRightList={setRightList}
+        setLeftList={setLeftList}
+        getLabel={(item: IDados) => item.name}
+      />
+      <Box
+        sx={{
+          display: 'flex',
+          justifyContent: 'flex-end',
+          marginTop: 2,
+          marginBottom: 3
+        }}
+      >
+        <DefaultButton loading={loading} onClick={handleSubmit}>
+          Salvar alterações
+        </DefaultButton>
+      </Box>
+    </Box>
   )
 }
 
-interface IFormUpdate extends IFormInsert{
+interface IFormUpdate extends IFormInsert {
   itemSelecionado: IDados
 }
 
-function FormEdit ({ fecharModal, atualizar, itemSelecionado }: IFormUpdate) {
+function FormEdit({ fecharModal, atualizar, itemSelecionado }: IFormUpdate) {
   const { createAlert } = useContext(AlertContext)
   const [loading, setLoading] = useState(false)
 
-  async function handleSubmit (campos) {
+  async function handleSubmit(campos) {
     try {
       setLoading(true)
       await api.put(`/users?login=${itemSelecionado.login}`, campos)
@@ -308,17 +377,24 @@ function FormEdit ({ fecharModal, atualizar, itemSelecionado }: IFormUpdate) {
   }
 
   return (
-        <Box sx={{ paddingX: 2, paddingY: 4 }}>
-            <Typography variant="h5" sx={{ fontWeight: 'bold' }} >Novo usuário</Typography>
-            <Form onSubmit={handleSubmit} initialData={itemSelecionado}>
-                <Input name="name" type="text" label="Nome" />
-                <Input name="login" type="text" label="Login" defaultValue={`${itemSelecionado.login}`}/>
-                <Input name="pswd" type="password" label="Nova senha" />
-                <Box sx={{ width: '100%', marginTop: 2 }}>
-                    <LargeButton type="submit" loading={loading} title="Atualizar" />
-                </Box>
-            </Form>
+    <Box sx={{ paddingX: 2, paddingY: 4 }}>
+      <Typography variant='h5' sx={{ fontWeight: 'bold' }}>
+        Novo usuário
+      </Typography>
+      <Form onSubmit={handleSubmit} initialData={itemSelecionado}>
+        <Input name='name' type='text' label='Nome' />
+        <Input
+          name='login'
+          type='text'
+          label='Login'
+          defaultValue={`${itemSelecionado.login}`}
+        />
+        <Input name='password' type='password' label='Nova senha' />
+        <Box sx={{ width: '100%', marginTop: 2 }}>
+          <LargeButton type='submit' loading={loading} title='Atualizar' />
         </Box>
+      </Form>
+    </Box>
   )
 }
 
@@ -328,17 +404,21 @@ interface IActionButtons {
   handleOpenModalEditar(): void
 }
 
-function ActionButtons ({ items, setModal, handleOpenModalEditar }: IActionButtons) {
+function ActionButtons({
+  items,
+  setModal,
+  handleOpenModalEditar
+}: IActionButtons) {
   if (items.length < 1) return <></>
 
   return (
     <>
-      <Tooltip title="Editar">
+      <Tooltip title='Editar'>
         <IconButton onClick={() => handleOpenModalEditar()}>
           <MdEdit />
         </IconButton>
       </Tooltip>
-      <Tooltip title="Deletar">
+      <Tooltip title='Deletar'>
         <IconButton onClick={() => setModal('delete')}>
           <MdDelete />
         </IconButton>

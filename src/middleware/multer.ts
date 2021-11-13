@@ -14,7 +14,7 @@ aws.config.update({
 export const s3 = new aws.S3()
 
 const apiRoute = nextConnect({
-  onNoMatch (req, res: NextApiResponse) {
+  onNoMatch(req, res: NextApiResponse) {
     res.status(405).json({ error: `Method '${req.method}' Not Allowed` })
   }
 })
@@ -24,7 +24,7 @@ const upload = multer({
     s3,
     Bucket: process.env.AWS_BUCKET || '',
     ACL: 'public-read',
-    Key: async function (req, file, cb) {
+    Key: async function (_, file, cb) {
       const randomName = await getRandomChar(16)
       const hashedName = `${randomName}-${file.originalname}`
       cb(null, hashedName)
@@ -38,7 +38,6 @@ const upload = multer({
   })
 })
 
-apiRoute
-  .use(upload.single('file'))
+apiRoute.use(upload.single('file'))
 
 export { apiRoute }

@@ -742,6 +742,7 @@ model groups {
   group_permission group_permission[]
   users_groups     users_groups[]
 
+  users_suzanog_groups users_suzanog_groups[]
   @@index([module_id], name: "module_id")
 }
 
@@ -3319,6 +3320,17 @@ model users {
 }
 
 model users_groups {
+  id             Int            @id @default(autoincrement())
+  user_id        String         @db.VarChar(180)
+  group_id       Int            @db.UnsignedInt
+  groups         groups         @relation(fields: [group_id], references: [id])
+  users_suzanog5 users_suzanog5 @relation(fields: [user_id], references: [login])
+
+  @@index([group_id], name: "users_groups_fk_1")
+  @@index([user_id], name: "users_groups_fk_2")
+}
+
+model users_suzanog_groups {
   id       Int    @id @default(autoincrement())
   user_id  String @db.VarChar(180)
   group_id Int    @db.UnsignedInt
@@ -3329,11 +3341,13 @@ model users_groups {
 }
 
 model users_suzanog5 {
-  id                Int?                @db.UnsignedInt
-  name              String?             @db.VarChar(180)
-  login             String              @id @default("1") @db.VarChar(180)
-  password          String?             @db.VarChar(180)
-  armador           String?             @db.VarChar(50)
+  id           Int?           @db.UnsignedInt
+  name         String?        @db.VarChar(180)
+  login        String         @id @default("1") @db.VarChar(180)
+  password     String?        @db.VarChar(180)
+  role         String?        @db.VarChar(50)
+  users_groups users_groups[]
+
   remember_me_token remember_me_token[]
 }
 

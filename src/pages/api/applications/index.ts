@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { withRules } from '../../../middleware/withRules'
 import { prisma } from '../../../utils/database'
 
-function handler (req: NextApiRequest, res: NextApiResponse) {
+function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       return getAllApplications()
@@ -12,7 +12,7 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).send('No method provider')
   }
 
-  async function getAllApplications () {
+  async function getAllApplications() {
     const applications = await prisma.applications.findMany({
       where: {
         modules: {
@@ -25,10 +25,11 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).send(applications)
   }
 
-  async function updateAllRoutesByApp () {
+  async function updateAllRoutesByApp() {
     const { id, group, action }: any = req.query
 
-    if (!id || !group || !action) return res.status(400).send('Formato da requisição inválido')
+    if (!id || !group || !action)
+      return res.status(400).send('Formato da requisição inválido')
 
     if (action === 'remove') {
       const routes = await prisma.routes.findMany({
@@ -37,7 +38,7 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
         }
       })
 
-      const routeIds = routes.map(item => item.id)
+      const routeIds = routes.map((item) => item.id)
 
       await prisma.group_permission.updateMany({
         data: {
@@ -62,7 +63,7 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
         }
       })
 
-      const routeIds = routes.map(item => item.id)
+      const routeIds = routes.map((item) => item.id)
 
       const routesAlreadyCreated = await prisma.group_permission.findMany({
         where: {
@@ -70,20 +71,22 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
           route_id: { in: routeIds }
         }
       })
-      const routesAlreadyCreatedIds = routesAlreadyCreated.map(item => item.route_id)
+      const routesAlreadyCreatedIds = routesAlreadyCreated.map(
+        (item) => item.route_id
+      )
 
-      const routeIdsToCreate = routeIds.filter(item => (!routesAlreadyCreatedIds.includes(item)))
+      const routeIdsToCreate = routeIds.filter(
+        (item) => !routesAlreadyCreatedIds.includes(item)
+      )
 
-      const items = routeIdsToCreate.map(item =>
-        ({
-          canDelete: true,
-          canInsert: true,
-          canUpdate: true,
-          canView: true,
-          group_id: parseInt(group),
-          route_id: item
-        }
-        ))
+      const items = routeIdsToCreate.map((item) => ({
+        canDelete: true,
+        canInsert: true,
+        canUpdate: true,
+        canView: true,
+        group_id: parseInt(group),
+        route_id: item
+      }))
 
       await prisma.group_permission.createMany({
         data: items
@@ -109,4 +112,4 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
   }
 }
 
-export default withRules(handler)
+export default handler

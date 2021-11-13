@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next'
 import { prisma } from '../../../utils/database'
 
-function handler (req: NextApiRequest, res: NextApiResponse) {
+function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       return GET()
@@ -16,7 +16,7 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).send('No method provider')
   }
 
-  async function GET () {
+  async function GET() {
     const dados = await prisma.groups.findMany({
       where: {
         modules: {
@@ -30,13 +30,20 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json(dados)
   }
 
-  async function POST () {
+  async function POST() {
     const props = req.body
+    const module = await prisma.modules.findFirst({
+      where: {
+        slug: process.env.MODULE
+      }
+    })
+
+    if (!module) return res.status(404).send('Modúlo não encontrado')
 
     const groups = await prisma.groups.create({
       data: {
-        module_id: 1,
-        ...props
+        ...props,
+        module_id: module.id
       }
     })
 
@@ -45,7 +52,7 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
     return res.status(201).send(groups)
   }
 
-  async function DELETE () {
+  async function DELETE() {
     const { group_id }: any = req.query
 
     await prisma.groups.delete({
@@ -59,13 +66,15 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).end()
   }
 
-  async function PUT () {
+  async function PUT() {
     const { user_id }: any = req.query
     let { add, remove } = req.body
 
     if (!user_id) return res.status(400).send('usuário não enviado')
     if (remove.length > 0) {
-      await prisma.users_groups.deleteMany({ where: { group_id: { in: [...remove] } } })
+      await prisma.users_groups.deleteMany({
+        where: { group_id: { in: [...remove] }, AND: { user_id } }
+      })
     }
 
     const storageGroups = await prisma.users_groups.findMany({
@@ -74,10 +83,10 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
       }
     })
 
-    const storageGroupsId = storageGroups.map(item => item.group_id)
+    const storageGroupsId = storageGroups.map((item) => item.group_id)
 
-    add = add.filter(item => !storageGroupsId.includes(item))
-    const items:any = []
+    add = add.filter((item) => !storageGroupsId.includes(item))
+    const items: any = []
     for (let x = 0; x < add.length; x++) {
       items.push({ user_id, group_id: add[x] })
     }

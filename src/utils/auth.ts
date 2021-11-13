@@ -13,23 +13,25 @@ export interface IRequest {
   url: string
 }
 
-export function getCookie (req: NextApiRequest, name: string): string | null {
+export function getCookie(req: NextApiRequest, name: string): string | null {
   if (!req.headers.cookie) return null
   const cookies = req.headers.cookie.split('; ')
 
   for (const x in cookies) {
-    if (cookies[x].includes(name)) { return cookies[x].split('=')[1] }
+    if (cookies[x].includes(name)) {
+      return cookies[x].split('=')[1]
+    }
   }
 
   return null
 }
 
-export interface IToken{
+export interface IToken {
   user: IUserData
   origin?: string
 }
 
-export async function getSession (req: NextApiRequest): Promise<IToken | null> {
+export async function getSession(req: NextApiRequest): Promise<IToken | null> {
   const token = getCookieParser(req)()['next-token']
   if (!token) return null
   try {
@@ -41,7 +43,9 @@ export async function getSession (req: NextApiRequest): Promise<IToken | null> {
   }
 }
 
-export async function getSessionContext (req: IncomingMessage): Promise<IToken | null> {
+export async function getSessionContext(
+  req: IncomingMessage
+): Promise<IToken | null> {
   const token = getCookieParser(req)()['next-token']
 
   if (!token) return null
@@ -55,12 +59,16 @@ export async function getSessionContext (req: IncomingMessage): Promise<IToken |
 }
 
 export const generateNewSessionToken = (user: IUserData): string => {
-  const token = jwt.sign({ user }, `${process.env.JWT_SECRET}`, { expiresIn: '6mins' })
+  const token = jwt.sign({ user }, `${process.env.JWT_SECRET}`, {
+    expiresIn: '6mins'
+  })
   return token
 }
 
 export const generateNewRefreshToken = (user: IUserData): string => {
-  const token = jwt.sign({ user }, `${process.env.JWT_SECRET}`, { expiresIn: '60mins' })
+  const token = jwt.sign({ user }, `${process.env.JWT_SECRET}`, {
+    expiresIn: '60mins'
+  })
   return token
 }
 
@@ -69,8 +77,13 @@ interface IGenerateTokenProps {
   origin: string
 }
 
-export const generateNewRememberMeToken = ({ user, origin }: IGenerateTokenProps): string => {
-  const token = jwt.sign({ user, origin }, `${process.env.JWT_SECRET}`, { expiresIn: '7days' })
+export const generateNewRememberMeToken = ({
+  user,
+  origin
+}: IGenerateTokenProps): string => {
+  const token = jwt.sign({ user, origin }, `${process.env.JWT_SECRET}`, {
+    expiresIn: '7days'
+  })
   return token
 }
 
@@ -81,7 +94,10 @@ export const hashPassword = async (password: string): Promise<string> => {
   return hashedPassword
 }
 
-export const comparePassword = async (password: string, storagePassword: string): Promise<boolean> => {
+export const comparePassword = async (
+  password: string,
+  storagePassword: string
+): Promise<boolean> => {
   const hash = crypto.createHash('sha512')
   const hashedPassword = hash.update(password, 'utf-8').digest('hex')
 

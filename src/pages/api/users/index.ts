@@ -2,7 +2,7 @@ import { NextApiRequest, NextApiResponse } from 'next'
 import { hashPassword } from '../../../utils/auth'
 import { prisma } from '../../../utils/database'
 
-function handler (req: NextApiRequest, res: NextApiResponse) {
+function handler(req: NextApiRequest, res: NextApiResponse) {
   switch (req.method) {
     case 'GET':
       return GET()
@@ -17,24 +17,24 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
       return res.status(400).send('No method provider')
   }
 
-  async function GET () {
+  async function GET() {
     const { login }: any = req.query
 
     if (login) {
-      const dados = await prisma.sec_users.findFirst({
+      const dados = await prisma.users_suzanog5.findFirst({
         select: {
           name: true,
           login: true,
-          email: true,
-          funcao: true,
+          role: true,
           users_groups: {
             select: {
-              groups: true
-            },
-            where: {
               groups: {
-                modules: {
-                  slug: process.env.MODULE
+                select: {
+                  id: true,
+                  name: true,
+                  modules: true,
+                  module_id: true,
+                  display_name: true
                 }
               }
             }
@@ -45,20 +45,35 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
         }
       })
 
+      const filteredGroups = dados?.users_groups.filter(
+        (item) => item.groups.modules.slug === process.env.MODULE
+      )
+      const user = {
+        ...dados,
+        users_groups: filteredGroups
+      }
+
       await prisma.$disconnect()
 
-      return res.status(200).json(dados)
+      return res.status(200).json(user)
     }
 
-    const dados = await prisma.sec_users.findMany({
+    const dados = await prisma.users_suzanog5.findMany({
       select: {
         name: true,
         login: true,
-        email: true,
-        funcao: true,
+        role: true,
         users_groups: {
           select: {
-            groups: true
+            groups: {
+              select: {
+                id: true,
+                name: true,
+                modules: true,
+                module_id: true,
+                display_name: true
+              }
+            }
           }
         }
       }
@@ -69,27 +84,27 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json(dados)
   }
 
-  async function POST () {
+  async function POST() {
     const props = req.body
 
-    const dados = await prisma.sec_users.create({
+    if (props.password) props.password = await hashPassword(props.password)
+
+    const dados = await prisma.users_suzanog5.create({
       data: props
     })
-
-    if (props.pswd) props.pswd = await hashPassword(props.pswd)
 
     await prisma.$disconnect()
 
     return res.status(201).json(dados)
   }
 
-  async function PUT () {
+  async function PUT() {
     const { login }: any = req.query
     const props = req.body
 
-    if (props.pswd) props.pswd = await hashPassword(props.pswd)
+    if (props.password) props.password = await hashPassword(props.password)
 
-    const dados = await prisma.sec_users.update({
+    const dados = await prisma.users_suzanog5.update({
       data: props,
       where: {
         login
@@ -101,10 +116,10 @@ function handler (req: NextApiRequest, res: NextApiResponse) {
     return res.status(200).json(dados)
   }
 
-  async function DELETE () {
+  async function DELETE() {
     const { login }: any = req.query
 
-    const dados = await prisma.sec_users.deleteMany({
+    const dados = await prisma.users_suzanog5.deleteMany({
       where: {
         login: {
           in: login.split(',')
