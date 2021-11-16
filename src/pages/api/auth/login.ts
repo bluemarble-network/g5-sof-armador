@@ -55,8 +55,7 @@ async function handler(
 
   const formattedUser = {
     name: storageUser.name || '',
-    login: storageUser.login,
-    role: storageUser.role
+    login: storageUser.login
   }
 
   const token = generateNewSessionToken({ ...formattedUser })
