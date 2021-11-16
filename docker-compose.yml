@@ -1,0 +1,20 @@
+version: "3.9"
+
+services:
+  litodb:
+    image: mariadb
+    container_name: litodb
+    restart: always
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: litobikes
+      MYSQL_USER: lito
+      MYSQL_PASSWORD: lito 
+    volumes:
+     - ./dump.sh:/dump.sh
+   
+volumes:
+  litodb:
+    driver: local

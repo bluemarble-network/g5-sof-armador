@@ -1,0 +1,68 @@
+{
+  "name": "copi-custo",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test": "jest"
+  },
+  "dependencies": {
+    "@emotion/react": "^11.4.1",
+    "@emotion/styled": "^11.3.0",
+    "@material-ui/core": "^5.0.0-beta.5",
+    "@prisma/client": "^2.29.1",
+    "@typescript-eslint/eslint-plugin": "^5.0.0",
+    "@unform/core": "^2.1.6",
+    "@unform/web": "^2.1.6",
+    "aws-sdk": "^2.1022.0",
+    "axios": "^0.21.1",
+    "bcrypt": "^5.0.1",
+    "cookie": "^0.4.1",
+    "eslint-config-standard": "^16.0.3",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-react": "^7.26.1",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^8.5.1",
+    "moment": "^2.29.1",
+    "multer": "^1.4.3",
+    "multer-sharp-s3": "^0.2.1",
+    "next": "11.0.1",
+    "next-connect": "^0.11.0",
+    "nookies": "^2.5.2",
+    "powerbi-client": "^2.18.0",
+    "powerbi-client-react": "^1.3.3",
+    "react": "17.0.2",
+    "react-dom": "17.0.2"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^13.2.1",
+    "@commitlint/config-conventional": "^13.2.0",
+    "@types/bcrypt": "^5.0.0",
+    "@types/cookie": "^0.4.1",
+    "@types/jest": "^26.0.24",
+    "@types/jsonwebtoken": "^8.5.4",
+    "@types/node": "^16.3.2",
+    "@types/react": "17.0.14",
+    "cz-conventional-changelog": "3.3.0",
+    "eslint": "^7.12.1",
+    "eslint-config-next": "11.0.1",
+    "eslint-plugin-import-helpers": "^1.1.0",
+    "husky": "^7.0.2",
+    "jest": "^27.0.6",
+    "prettier": "^2.4.1",
+    "prisma": "^2.29.1",
+    "react-icons": "^4.2.0",
+    "ts-node": "^10.1.0",
+    "typescript": "4.3.5"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
