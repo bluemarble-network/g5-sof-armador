@@ -213,7 +213,7 @@ const GridModalArquivosVessel = ({
       setLoading(false)
       setData(data)
     } catch (error) {
-      createAlert(error, 'error')
+      createAlert(getErrorMessage(error), 'error')
     }
   }
 
