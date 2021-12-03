@@ -41,8 +41,8 @@ export default function Navio({ role }) {
   const { createAlert } = useContext(AlertContext)
 
   const titulos = [
-    { name: 'SOF_Number', label: 'Navio Viagem' },
-    { name: 'Vessel', label: 'Navio' },
+    { name: 'SOF_Number', label: 'Ship Travel' },
+    { name: 'Vessel', label: 'Vessel' },
     { name: 'PDF', label: ' ' }
   ]
   async function AtualizarFiltros() {

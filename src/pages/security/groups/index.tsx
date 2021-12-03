@@ -106,7 +106,7 @@ function Groups() {
   return (
     <Box sx={{ py: 8 }}>
       <Head>
-        <title>Grupos</title>
+        <title>Groups</title>
       </Head>
       <CssBaseline />
       <Box
@@ -115,7 +115,7 @@ function Groups() {
           margin: 'auto'
         }}
       >
-        <Header title='Gerenciar permissões'>
+        <Header title='Manage permissions'>
           <GridButton
             type='insert'
             color='success'

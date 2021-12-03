@@ -67,7 +67,7 @@ function Login() {
           <Input id='login' label='Login' name='login' required autoFocus />
           <Input
             name='password'
-            label='Senha'
+            label='Password'
             type='password'
             id='password'
             required
@@ -84,10 +84,10 @@ function Login() {
             <FormControlLabel
               name='remember'
               control={<Checkbox />}
-              label='Lembrar-me'
+              label='Remember-me'
             />
           </Box>
-          <LargeButton type='submit' title='Entrar' loading={loading} />
+          <LargeButton type='submit' title='Sign In' loading={loading} />
           <Box sx={{ py: 1 }} />
         </Form>
       </Paper>
