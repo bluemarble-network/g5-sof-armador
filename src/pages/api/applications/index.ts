@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next'
-import { withRules } from '../../../middleware/withRules'
 import { prisma } from '../../../utils/database'
 
 function handler(req: NextApiRequest, res: NextApiResponse) {
@@ -28,8 +27,9 @@ function handler(req: NextApiRequest, res: NextApiResponse) {
   async function updateAllRoutesByApp() {
     const { id, group, action }: any = req.query
 
-    if (!id || !group || !action)
+    if (!id || !group || !action) {
       return res.status(400).send('Formato da requisição inválido')
+    }
 
     if (action === 'remove') {
       const routes = await prisma.routes.findMany({

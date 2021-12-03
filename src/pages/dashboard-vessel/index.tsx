@@ -7,7 +7,7 @@ export default function Page({ dados }: any) {
   return (
     <PowerBi
       props={dados}
-      page={1}
+      page={2}
       preloader={
         'https://dev.bluemarble.com.br/sc/devel/conf/grp/CadastroEmpilhadeiras/img/bg/G5.gif'
       }
