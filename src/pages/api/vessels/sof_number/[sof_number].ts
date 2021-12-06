@@ -19,18 +19,6 @@ export default async function handler(
 
     if (!session) return res.status(401).send('Sessão não encontrada')
 
-    const groups = await prisma.groups.findMany({
-      where: {
-        users_groups: {
-          some: {
-            user_id: session.user.login
-          }
-        }
-      }
-    })
-
-    if (!groups.some((group) => group.name === 'admin')) return res.json([])
-
     const data = await prisma.embarqueSOF_Arquivos.findMany({
       select: {
         idEmbarqueSOF_Arquivos: true,
