@@ -1,31 +1,25 @@
 {
-    "env": {
-        "browser": true,
-        "es2021": true,
-        "node": true
+  "env": {
+    "browser": true,
+    "es2021": true,
+    "node": true
+  },
+  "extends": ["next", "next/core-web-vitals", "standard"],
+  "parser": "@typescript-eslint/parser",
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true
     },
-    "extends": [
-      "next",
-      "next/core-web-vitals",
-      "standard"
-    ],
-    "parser": "@typescript-eslint/parser",
-    "parserOptions": {
-        "ecmaFeatures": {
-            "jsx": true
-        },
-        "ecmaVersion": 12,
-        "sourceType": "module"
-    },
-    "plugins": [
-      "@typescript-eslint",
-      "eslint-plugin-import-helpers"
-    ],
-    "rules": {
-      "space-before-function-paren":"off",
-      "react-hooks/exhaustive-deps": "off",
-      "camelcase": "off",
-      "import/no-unresolved": "error",
+    "ecmaVersion": 12,
+    "sourceType": "module"
+  },
+  "plugins": ["@typescript-eslint", "eslint-plugin-import-helpers"],
+  "rules": {
+    "multiline-ternary": "off",
+    "space-before-function-paren": "off",
+    "react-hooks/exhaustive-deps": "off",
+    "camelcase": "off",
+    "import/no-unresolved": "error",
     "@typescript-eslint/naming-convention": [
       "error",
       {
@@ -60,10 +54,10 @@
         "alphabetize": { "order": "asc", "ignoreCase": true }
       }
     ]
-    },
-    "settings": {
-      "import/resolver": {
-          "typescript": {}
-      }
+  },
+  "settings": {
+    "import/resolver": {
+      "typescript": {}
     }
+  }
 }
