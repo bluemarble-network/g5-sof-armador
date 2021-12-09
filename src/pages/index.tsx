@@ -117,7 +117,7 @@ export async function getServerSideProps({ req }) {
   ) {
     return {
       redirect: {
-        destination: '/vessel'
+        destination: '/dashboard-vessel'
       }
     }
   } else {
