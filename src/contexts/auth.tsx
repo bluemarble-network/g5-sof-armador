@@ -14,16 +14,16 @@ type iGroups = {
 }
 
 type iUser = {
-    id: number
-    name: string
-    role: string
-    groups: iGroups[]
+  id: number
+  name: string
+  role: string
+  groups: iGroups[]
 }
 
 type iAuthProps = {
-    isAuthenticated: boolean
-    user: iUser | null
-    SignOut(): void
+  isAuthenticated: boolean
+  user: iUser | null
+  SignOut(): void
 }
 
 export const AuthContext = createContext({} as iAuthProps)
@@ -33,41 +33,45 @@ export const AuthProvider: FC = ({ children }) => {
   const { createAlert } = useContext(AlertContext)
   const router = useRouter()
 
-  async function SignOut () {
+  async function SignOut() {
     await api.get('/auth/logout')
     router.push('/')
   }
 
   useEffect(() => {
-    api.interceptors.response.use(response => response, async (error) => {
-      if (error.response.status === 401) {
-        const { config } = error
-        try {
-          await api.get('/auth/refreshToken')
-          const defaultResponse = await api(config)
-          return Promise.resolve(defaultResponse)
-        } catch (error) {
-          const cookies = parseCookies()
-          const token = cookies['next-token']
-          const decodedToken: any = jwt.decode(token)
+    api.interceptors.response.use(
+      (response) => response,
+      async (error) => {
+        if (error.response.status === 401) {
+          const { config } = error
+          try {
+            await api.get('/auth/refreshToken')
+            const defaultResponse = await api(config)
+            return Promise.resolve(defaultResponse)
+          } catch (error) {
+            const cookies = parseCookies()
+            const token = cookies['next-token']
+            const decodedToken: any = jwt.decode(token)
 
-          if (decodedToken) {
-            const user = decodedToken.data.user
-            setUser(user)
-          } else {
-            SignOut()
+            if (decodedToken) {
+              const user = decodedToken.data.user
+              setUser(user)
+            } else {
+              SignOut()
+            }
+
+            return Promise.reject(error)
           }
-
-          return Promise.reject(error)
         }
+        return Promise.reject(error)
       }
-      return Promise.reject(error)
-    })
+    )
   }, [user])
 
-  async function getNewToken () {
+  async function getNewToken() {
     try {
       await api.get('/auth/refreshToken')
+      router.reload()
     } catch (error) {
       createAlert(getErrorMessage(error), 'error')
       router.push('/')
@@ -87,31 +91,29 @@ export const AuthProvider: FC = ({ children }) => {
   }, [])
 
   return (
-        <AuthContext.Provider value={{ isAuthenticated: !!user, user, SignOut }}>
-            {
-                !user
-                  ? <Loading />
-                  : <>{children}</>
-            }
-        </AuthContext.Provider>
+    <AuthContext.Provider value={{ isAuthenticated: !!user, user, SignOut }}>
+      {!user ? <Loading /> : <>{children}</>}
+    </AuthContext.Provider>
   )
 }
 
 export const Loading: FC = () => {
   return (
-        <>
-            <CssBaseline/>
-            <Box sx={{
-              backgroundColor: '#fff',
-              color: 'black',
-              width: '100vw',
-              height: '100vh',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center'
-            }}>
-                <CircularProgress color="inherit" />
-            </Box>
-        </>
+    <>
+      <CssBaseline />
+      <Box
+        sx={{
+          backgroundColor: '#fff',
+          color: 'black',
+          width: '100vw',
+          height: '100vh',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center'
+        }}
+      >
+        <CircularProgress color='inherit' />
+      </Box>
+    </>
   )
 }

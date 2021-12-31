@@ -60,14 +60,14 @@ export async function getSessionContext(
 
 export const generateNewSessionToken = (user: IUserData): string => {
   const token = jwt.sign({ user }, `${process.env.JWT_SECRET}`, {
-    expiresIn: '6mins'
+    expiresIn: '15min'
   })
   return token
 }
 
 export const generateNewRefreshToken = (user: IUserData): string => {
   const token = jwt.sign({ user }, `${process.env.JWT_SECRET}`, {
-    expiresIn: '60mins'
+    expiresIn: '7day'
   })
   return token
 }
