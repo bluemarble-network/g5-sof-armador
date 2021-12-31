@@ -80,7 +80,7 @@ async function handler(
       .setHeader('Set-Cookie', [
         serialize('next-token', token, {
           path: '/',
-          expires: moment().add(6, 'minutes').toDate()
+          expires: moment().add(15, 'minutes').toDate()
         }),
         serialize('next-remember-me-token', rememberMeToken, {
           path: '/',
