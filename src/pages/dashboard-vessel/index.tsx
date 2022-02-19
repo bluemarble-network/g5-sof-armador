@@ -20,7 +20,7 @@ export default function Page({ dados }: any) {
 
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data } = await axios.get(
-    'https://dev.bluemarble.com.br/sc/app/SantosBrasil/blank_powerbi_token/?relatorio=G5_NAVIO_OPERANDO'
+    'https://sb.bluemarble.com.br/blank_powerbi_token/?relatorio=G5_NAVIO_OPERANDO'
   )
   const session = await getSessionContext(ctx.req)
 
