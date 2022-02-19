@@ -17,7 +17,7 @@ export default function Page({ dados }: any) {
 
 export async function getServerSideProps() {
   const { data } = await axios.get(
-    'https://dev.bluemarble.com.br/sc/app/SantosBrasil/blank_powerbi_token/?relatorio=G5_NAVIO_OPERANDO'
+    'https://sb.bluemarble.com.br/blank_powerbi_token/?relatorio=G5_NAVIO_OPERANDO'
   )
   return { props: { dados: data } }
 }
