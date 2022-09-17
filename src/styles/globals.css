@@ -18,7 +18,16 @@ a{
 a:active {
     color: initial
 }
+
 .report-style-class{
-    width: 100vw;
-    height: 100vh
-}
+    height: 100%;
+    width: 100%;
+    height: calc(100% + 41px);
+    top: -41px; 
+    position: absolute;
+    border: none;
+    overflow: hidden;
+  }
+  .report-style-class iframe{
+    border: none;
+  }
