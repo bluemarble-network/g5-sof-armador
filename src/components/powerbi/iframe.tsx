@@ -20,7 +20,8 @@ export default function Iframe({ props, preloader, page, filters }) {
             position: 'absolute',
             left: 0,
             top: 0,
-            backgroundColor: '#fff'
+            backgroundColor: '#fff',
+            zIndex: 9999
           }}
         >
           <Image src={preloader} alt='Preloader' width={400} height={400} />

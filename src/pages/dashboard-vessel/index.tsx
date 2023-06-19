@@ -12,7 +12,7 @@ export default function Page({ dados }: any) {
       props={dados}
       page={5}
       preloader={
-        'https://dev.bluemarble.com.br/sc/devel/conf/grp/CadastroEmpilhadeiras/img/bg/G5.gif'
+        'https://adev.bluemarble.com.br/sc/app/SGI_SIG5/_lib/libraries/sys/PowerBI/preloader/G5.gif'
       }
     />
   )
