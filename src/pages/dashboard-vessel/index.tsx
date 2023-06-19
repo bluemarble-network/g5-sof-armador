@@ -42,17 +42,21 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   })
 
-  if (
-    userGroups?.find((group) => group.name === navioOperando.armador) &&
-    !userGroups?.find((group) => group.name === 'admin')
-  ) {
-    return {
-      redirect: {
-        permanent: true,
-        destination: '/ship-not-found'
-      }
-    }
+  await prisma.$disconnect()
+
+  const encontrouArmador = userGroups?.some(
+    (group) => group.name === navioOperando.armador
+  )
+  const isAdmin = userGroups?.some((group) => group.name === 'admin')
+
+  if (encontrouArmador || isAdmin) {
+    return { props: { dados: data } }
   }
 
-  return { props: { dados: data } }
+  return {
+    redirect: {
+      permanent: true,
+      destination: '/ship-not-found'
+    }
+  }
 }
