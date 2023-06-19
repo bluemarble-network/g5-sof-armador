@@ -18,16 +18,21 @@ export default function Page({ dados }: any) {
   )
 }
 
+interface INavioOperando {
+  navio: string
+  armador: string
+}
+
 export const getServerSideProps: GetServerSideProps = async (ctx) => {
   const { data } = await axios.get(
     'https://sb.bluemarble.com.br/blank_powerbi_token/?relatorio=G5_NAVIO_OPERANDO'
   )
   const session = await getSessionContext(ctx.req)
 
-  const { data: currentShip } = await axios.get(
+  const { data: navioOperando } = await axios.get<INavioOperando>(
     'https://adev.bluemarble.com.br/sc/app/SGI_SIG5/blank_dados_navio_operando'
   )
-  const userGroup = await prisma.groups.findFirst({
+  const userGroups = await prisma.groups.findMany({
     where: {
       users_groups: {
         some: {
@@ -37,7 +42,10 @@ export const getServerSideProps: GetServerSideProps = async (ctx) => {
     }
   })
 
-  if (userGroup?.name !== currentShip[1] && userGroup?.name !== 'admin') {
+  if (
+    userGroups?.find((group) => group.name === navioOperando.armador) &&
+    !userGroups?.find((group) => group.name === 'admin')
+  ) {
     return {
       redirect: {
         permanent: true,
